@@ -1,3 +1,86 @@
+// ── 타이머 ──
+const TIMER_CIRCUMFERENCE = 439.82;
+let timerSeconds = 30 * 60;
+let timerOriginal = 30 * 60;
+let timerInterval = null;
+let timerRunning = false;
+
+function setTimer(minutes) {
+  if (timerRunning) return;
+  timerSeconds = minutes * 60;
+  timerOriginal = timerSeconds;
+  document.querySelectorAll('.preset-btn').forEach(b => {
+    b.classList.toggle('active', parseInt(b.textContent) === minutes);
+  });
+  document.getElementById('timer-custom-display').textContent = minutes + '분';
+  updateTimerDisplay();
+}
+
+function adjustTimer(delta) {
+  if (timerRunning) return;
+  const newMin = Math.max(1, Math.round(timerOriginal / 60) + delta);
+  setTimer(newMin);
+  document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+}
+
+function toggleTimer() {
+  if (timerRunning) pauseTimer();
+  else startTimer();
+}
+
+function startTimer() {
+  if (timerSeconds <= 0) resetTimer();
+  timerRunning = true;
+  document.getElementById('btn-timer-start').textContent = '⏸ 일시정지';
+  document.getElementById('timer-status').textContent = '운동 중';
+  document.getElementById('timer-card').classList.add('running');
+  document.getElementById('timer-card').classList.remove('done');
+
+  timerInterval = setInterval(() => {
+    timerSeconds--;
+    updateTimerDisplay();
+    if (timerSeconds <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('btn-timer-start').textContent = '▶ 시작';
+      document.getElementById('timer-status').textContent = '완료!';
+      document.getElementById('timer-card').classList.remove('running');
+      document.getElementById('timer-card').classList.add('done');
+      showToast('🎉 운동 완료! 수고했어요!');
+      if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  document.getElementById('btn-timer-start').textContent = '▶ 계속';
+  document.getElementById('timer-status').textContent = '일시정지';
+  document.getElementById('timer-card').classList.remove('running');
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerSeconds = timerOriginal;
+  document.getElementById('btn-timer-start').textContent = '▶ 시작';
+  document.getElementById('timer-status').textContent = '준비';
+  document.getElementById('timer-card').classList.remove('running', 'done');
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerSeconds / 60);
+  const s = timerSeconds % 60;
+  document.getElementById('timer-display').textContent =
+    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+
+  const progress = timerOriginal > 0 ? timerSeconds / timerOriginal : 1;
+  const offset = TIMER_CIRCUMFERENCE * (1 - progress);
+  document.getElementById('timer-ring-fill').style.strokeDashoffset = offset;
+}
+
 // ── 로컬 저장소 ──
 function getAllWorkouts() {
   try {

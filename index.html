@@ -31,6 +31,40 @@
       <h2 id="today-date"></h2>
       <p>오늘의 운동을 기록하세요</p>
     </div>
+
+    <!-- 타이머 카드 -->
+    <div class="timer-card" id="timer-card">
+      <div class="timer-ring-wrap">
+        <svg class="timer-ring" viewBox="0 0 160 160" width="160" height="160">
+          <circle cx="80" cy="80" r="70" class="timer-ring-bg"/>
+          <circle cx="80" cy="80" r="70" class="timer-ring-fill" id="timer-ring-fill"/>
+        </svg>
+        <div class="timer-center">
+          <div class="timer-display" id="timer-display">30:00</div>
+          <div class="timer-status" id="timer-status">준비</div>
+        </div>
+      </div>
+
+      <div class="timer-presets">
+        <button class="preset-btn" onclick="setTimer(10)">10분</button>
+        <button class="preset-btn" onclick="setTimer(20)">20분</button>
+        <button class="preset-btn active" onclick="setTimer(30)">30분</button>
+        <button class="preset-btn" onclick="setTimer(45)">45분</button>
+        <button class="preset-btn" onclick="setTimer(60)">60분</button>
+      </div>
+
+      <div class="timer-custom">
+        <button class="timer-adj" onclick="adjustTimer(-5)">－5분</button>
+        <span id="timer-custom-display">30분</span>
+        <button class="timer-adj" onclick="adjustTimer(5)">＋5분</button>
+      </div>
+
+      <div class="timer-controls">
+        <button id="btn-timer-start" class="btn-timer-start" onclick="toggleTimer()">▶ 시작</button>
+        <button class="btn-timer-reset" onclick="resetTimer()">↺ 초기화</button>
+      </div>
+    </div>
+
     <div id="today-content"></div>
   </div>
 

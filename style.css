@@ -447,6 +447,193 @@ html, body {
   box-shadow: 0 2px 8px rgba(99,102,241,0.3);
 }
 
+/* ── 타이머 ── */
+.timer-card {
+  background: var(--surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 20px 16px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.3s;
+}
+
+.timer-card.running {
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.3), var(--shadow-md);
+}
+
+.timer-card.done {
+  box-shadow: 0 0 0 3px rgba(16,185,129,0.4), var(--shadow-md);
+}
+
+.timer-ring-wrap {
+  position: relative;
+  width: 160px;
+  height: 160px;
+}
+
+.timer-ring {
+  transform: rotate(-90deg);
+}
+
+.timer-ring-bg {
+  fill: none;
+  stroke: var(--border);
+  stroke-width: 10;
+}
+
+.timer-ring-fill {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 10;
+  stroke-linecap: round;
+  stroke-dasharray: 439.82;
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.9s linear, stroke 0.3s;
+}
+
+.timer-card.done .timer-ring-fill {
+  stroke: var(--success);
+}
+
+.timer-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.timer-display {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+.timer-status {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.timer-card.running .timer-status {
+  color: var(--primary);
+}
+
+.timer-presets {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.preset-btn {
+  padding: 7px 14px;
+  border-radius: 50px;
+  border: 2px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.preset-btn.active,
+.preset-btn:active {
+  border-color: var(--primary);
+  background: #ede9fe;
+  color: var(--primary-dark);
+}
+
+.timer-custom {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.timer-adj {
+  padding: 8px 14px;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.timer-adj:active {
+  background: var(--border);
+}
+
+.timer-controls {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.btn-timer-start {
+  flex: 1;
+  padding: 14px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.btn-timer-start:active {
+  transform: scale(0.97);
+  background: var(--primary-dark);
+}
+
+.timer-card.running .btn-timer-start {
+  background: #f59e0b;
+}
+
+.btn-timer-reset {
+  padding: 14px 20px;
+  background: var(--bg);
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-timer-reset:active {
+  background: var(--border);
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.03); opacity: 0.85; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.timer-card.running .timer-ring-wrap {
+  animation: pulse-ring 2s ease-in-out infinite;
+}
+
 /* ── 운동 완료 버튼 ── */
 .btn-finish {
   width: 100%;
