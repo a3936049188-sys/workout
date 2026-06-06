@@ -282,29 +282,50 @@ function confirmAddExercise() {
 
 // ── 운동 중 화면 ──
 const aw = {
-  date: null,
-  exercises: [],
-  exIdx: 0,
-  setNum: 1,
-  sets: {},       // { exIdx: [{ value, note }] }
-  timerSecs: 0,
-  timerOriginal: 0,
-  timerRunning: false,
-  timerInterval: null,
+  date: null, exercises: [], exIdx: 0, setNum: 1,
+  sets: {},  // { exIdx: [{ value, note, time }] }
 };
+
+// 스톱워치
+const sw = { secs: 0, running: false, interval: null };
+
+function fmtTime(secs) {
+  const m = Math.floor(secs / 60), s = secs % 60;
+  return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function toggleStopwatch() {
+  if (sw.running) {
+    clearInterval(sw.interval);
+    sw.running = false;
+    document.getElementById('aw-sw-btn').textContent = '▶ 계속';
+  } else {
+    sw.running = true;
+    document.getElementById('aw-sw-btn').textContent = '⏸ 정지';
+    sw.interval = setInterval(() => {
+      sw.secs++;
+      document.getElementById('aw-sw-display').textContent = fmtTime(sw.secs);
+    }, 1000);
+  }
+}
+
+function resetStopwatch() {
+  clearInterval(sw.interval);
+  sw.running = false;
+  sw.secs = 0;
+  document.getElementById('aw-sw-display').textContent = '00:00';
+  document.getElementById('aw-sw-btn').textContent = '▶ 시작';
+}
 
 function startActiveWorkout() {
   if (!modalWorkout.exercises || modalWorkout.exercises.length === 0) {
-    showToast('운동을 먼저 추가하세요');
-    return;
+    showToast('운동을 먼저 추가하세요'); return;
   }
   aw.date = modalDate;
   aw.exercises = JSON.parse(JSON.stringify(modalWorkout.exercises));
-  aw.exIdx = 0;
-  aw.setNum = 1;
-  aw.sets = {};
+  aw.exIdx = 0; aw.setNum = 1; aw.sets = {};
   aw.exercises.forEach((_, i) => { aw.sets[i] = []; });
-
+  resetStopwatch();
   document.getElementById('workout-modal').classList.remove('open');
   document.getElementById('active-workout').classList.add('visible');
   renderAW();
@@ -318,68 +339,32 @@ function renderAW() {
   document.getElementById('aw-reps').value = '0';
   document.getElementById('aw-note').value = '';
   document.getElementById('aw-unit').textContent = ex.type === 'time' ? '초' : '회';
-
-  // 타이머
-  clearInterval(aw.timerInterval);
-  aw.timerRunning = false;
-  aw.timerSecs = ex.duration || 0;
-  aw.timerOriginal = ex.duration || 0;
-  const timerSection = document.getElementById('aw-timer-section');
-  timerSection.style.display = ex.duration > 0 ? 'flex' : 'none';
-  document.getElementById('aw-btn-timer').textContent = '▶ 시작';
-  updateAWTimer();
-
-  // 이전 세트 목록
-  renderAWSets();
-
   document.getElementById('aw-btn-prev').disabled = aw.exIdx === 0;
   document.getElementById('aw-btn-next').disabled = aw.exIdx === aw.exercises.length - 1;
+  renderAWTable();
 }
 
-function toggleAWTimer() {
-  if (aw.timerRunning) pauseAWTimer(); else startAWTimer();
-}
+function renderAWTable() {
+  const sets = aw.sets[aw.exIdx] || [];
+  const section = document.getElementById('aw-table-section');
+  if (sets.length === 0) { section.style.display = 'none'; return; }
 
-function startAWTimer() {
-  if (aw.timerSecs <= 0) { aw.timerSecs = aw.timerOriginal; }
-  aw.timerRunning = true;
-  document.getElementById('aw-btn-timer').textContent = '⏸ 일시정지';
-  aw.timerInterval = setInterval(() => {
-    aw.timerSecs--;
-    updateAWTimer();
-    if (aw.timerSecs <= 0) {
-      clearInterval(aw.timerInterval);
-      aw.timerRunning = false;
-      document.getElementById('aw-btn-timer').textContent = '▶ 다시';
-      if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
-      showToast('⏰ 시간 완료!');
-    }
-  }, 1000);
-}
+  section.style.display = 'block';
+  const ex = aw.exercises[aw.exIdx];
+  const unit = ex.type === 'time' ? '초' : '회';
 
-function pauseAWTimer() {
-  clearInterval(aw.timerInterval);
-  aw.timerRunning = false;
-  document.getElementById('aw-btn-timer').textContent = '▶ 계속';
-}
+  const headCells = sets.map((_, i) => `<th>세트 ${i+1}</th>`).join('');
+  const repsCells = sets.map(s => `<td class="highlight">${s.value}${unit}</td>`).join('');
+  const timeCells = sets.map(s => `<td>${fmtTime(s.time || 0)}</td>`).join('');
+  const noteCells = sets.map(s => `<td style="color:var(--text-muted);font-size:12px">${s.note || '-'}</td>`).join('');
 
-function resetAWTimer() {
-  clearInterval(aw.timerInterval);
-  aw.timerRunning = false;
-  aw.timerSecs = aw.timerOriginal;
-  document.getElementById('aw-btn-timer').textContent = '▶ 시작';
-  updateAWTimer();
-}
-
-function updateAWTimer() {
-  const m = Math.floor(aw.timerSecs / 60);
-  const s = aw.timerSecs % 60;
-  document.getElementById('aw-timer').textContent =
-    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  const pct = aw.timerOriginal > 0 ? (aw.timerSecs / aw.timerOriginal) * 100 : 100;
-  const bar = document.getElementById('aw-timer-bar');
-  bar.style.width = `${pct}%`;
-  bar.style.background = pct < 20 ? 'var(--danger)' : pct < 50 ? 'var(--amber)' : 'var(--primary)';
+  document.getElementById('aw-table').innerHTML = `
+    <thead><tr><th></th>${headCells}</tr></thead>
+    <tbody>
+      <tr><td class="aw-row-label">횟수</td>${repsCells}</tr>
+      <tr><td class="aw-row-label">시간</td>${timeCells}</tr>
+      <tr><td class="aw-row-label">메모</td>${noteCells}</tr>
+    </tbody>`;
 }
 
 function adjustReps(delta) {
@@ -390,37 +375,18 @@ function adjustReps(delta) {
 function completeSet() {
   const value = document.getElementById('aw-reps').value || '0';
   const note = document.getElementById('aw-note').value.trim();
-  aw.sets[aw.exIdx].push({ value, note });
+  const time = sw.secs;
+  aw.sets[aw.exIdx].push({ value, note, time });
   aw.setNum++;
-  clearInterval(aw.timerInterval);
-  aw.timerRunning = false;
-  aw.timerSecs = aw.timerOriginal;
+  resetStopwatch();
   renderAW();
   if (navigator.vibrate) navigator.vibrate(80);
   showToast(`✓ ${aw.sets[aw.exIdx].length}세트 완료!`);
 }
 
-function renderAWSets() {
-  const sets = aw.sets[aw.exIdx] || [];
-  const container = document.getElementById('aw-completed-sets');
-  if (sets.length === 0) { container.innerHTML = ''; return; }
-
-  const ex = aw.exercises[aw.exIdx];
-  container.innerHTML = `
-    <div class="aw-sets-done-title" style="padding:0 0 6px">완료한 세트</div>
-    <div class="aw-sets-done">
-      ${sets.map((s, i) => `
-        <div class="aw-set-done">
-          <div class="aw-set-num-badge">${i+1}</div>
-          <span class="aw-set-value">${s.value} ${ex.type === 'time' ? '초' : '회'}</span>
-          <span class="aw-set-note">${s.note}</span>
-        </div>`).join('')}
-    </div>`;
-}
-
 function prevExercise() {
   if (aw.exIdx > 0) {
-    clearInterval(aw.timerInterval);
+    resetStopwatch();
     aw.exIdx--;
     aw.setNum = aw.sets[aw.exIdx].length + 1;
     renderAW();
@@ -429,7 +395,7 @@ function prevExercise() {
 
 function nextExercise() {
   if (aw.exIdx < aw.exercises.length - 1) {
-    clearInterval(aw.timerInterval);
+    resetStopwatch();
     aw.exIdx++;
     aw.setNum = aw.sets[aw.exIdx].length + 1;
     renderAW();
@@ -443,7 +409,7 @@ function finishActiveWorkout() {
   const all = getAllWorkouts();
   all[aw.date] = { exercises: aw.exercises, savedAt: new Date().toISOString() };
   saveAllWorkouts(all);
-  clearInterval(aw.timerInterval);
+  resetStopwatch();
   document.getElementById('active-workout').classList.remove('visible');
   renderCalendar();
   showToast('🎉 운동 완료! 저장됐어요');
@@ -451,8 +417,8 @@ function finishActiveWorkout() {
 
 function exitActiveWorkout() {
   const hasSets = Object.values(aw.sets).some(s => s.length > 0);
-  if (hasSets && !confirm('운동 중인 기록이 있어요. 저장하지 않고 나갈까요?')) return;
-  clearInterval(aw.timerInterval);
+  if (hasSets && !confirm('기록 중인 운동이 있어요. 저장하지 않고 나갈까요?')) return;
+  resetStopwatch();
   document.getElementById('active-workout').classList.remove('visible');
   openWorkoutModal(aw.date);
 }

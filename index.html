@@ -189,6 +189,8 @@
 
 <!-- ── 운동 중 화면 ── -->
 <div id="active-workout" class="active-workout-screen">
+
+  <!-- 헤더 -->
   <div class="aw-header">
     <button class="aw-back-btn" onclick="exitActiveWorkout()">← 나가기</button>
     <div class="aw-header-center">
@@ -198,42 +200,52 @@
     <button class="aw-finish-btn" onclick="finishActiveWorkout()">종료</button>
   </div>
 
-  <div class="aw-set-badge" id="aw-set-label">세트 1</div>
+  <div class="aw-body">
 
-  <div class="aw-timer-section" id="aw-timer-section">
-    <div class="aw-timer-display" id="aw-timer">00:00</div>
-    <div class="aw-timer-bar-wrap">
-      <div class="aw-timer-bar" id="aw-timer-bar"></div>
-    </div>
-    <div class="aw-timer-btns">
-      <button id="aw-btn-timer" class="aw-btn-primary" onclick="toggleAWTimer()">▶ 시작</button>
-      <button class="aw-btn-secondary" onclick="resetAWTimer()">↺</button>
-    </div>
-  </div>
-
-  <div class="aw-inputs">
-    <div class="aw-input-row">
-      <label>횟수</label>
-      <div class="aw-count-wrap">
-        <button class="aw-count-btn" onclick="adjustReps(-1)">−</button>
-        <input type="number" id="aw-reps" class="aw-reps-input" value="0" min="0" inputmode="numeric">
-        <button class="aw-count-btn" onclick="adjustReps(1)">＋</button>
-        <span class="aw-unit" id="aw-unit">회</span>
+    <!-- 스톱워치 -->
+    <div class="aw-sw-card">
+      <div class="aw-sw-label">스톱워치</div>
+      <div class="aw-sw-display" id="aw-sw-display">00:00</div>
+      <div class="aw-sw-btns">
+        <button id="aw-sw-btn" class="aw-btn-primary" onclick="toggleStopwatch()">▶ 시작</button>
+        <button class="aw-btn-secondary" onclick="resetStopwatch()">↺</button>
       </div>
     </div>
-    <div class="aw-input-row">
-      <label>메모</label>
-      <input type="text" id="aw-note" class="aw-note-input" placeholder="메모 (선택)">
+
+    <!-- 현재 세트 입력 -->
+    <div class="aw-current-card">
+      <div class="aw-set-badge" id="aw-set-label">세트 1</div>
+      <div class="aw-input-row">
+        <label>횟수</label>
+        <div class="aw-count-wrap">
+          <button class="aw-count-btn" onclick="adjustReps(-1)">−</button>
+          <input type="number" id="aw-reps" class="aw-reps-input" value="0" min="0" inputmode="numeric">
+          <button class="aw-count-btn" onclick="adjustReps(1)">＋</button>
+          <span class="aw-unit" id="aw-unit">회</span>
+        </div>
+      </div>
+      <div class="aw-input-row" style="margin-top:10px">
+        <label>메모</label>
+        <input type="text" id="aw-note" class="aw-note-input" placeholder="메모 (선택)">
+      </div>
     </div>
+
+    <!-- 세트 기록 표 -->
+    <div class="aw-table-section" id="aw-table-section">
+      <div class="aw-table-title">세트 기록</div>
+      <div class="aw-table-wrap">
+        <table class="aw-table" id="aw-table"></table>
+      </div>
+    </div>
+
   </div>
 
-  <div id="aw-completed-sets"></div>
-
+  <!-- 하단 버튼 -->
   <div class="aw-bottom">
     <button class="aw-complete-set-btn" onclick="completeSet()">✓ 세트 완료</button>
     <div class="aw-nav-row">
-      <button id="aw-btn-prev" class="aw-nav-btn" onclick="prevExercise()">← 이전 운동</button>
-      <button id="aw-btn-next" class="aw-nav-btn" onclick="nextExercise()">다음 운동 →</button>
+      <button id="aw-btn-prev" class="aw-nav-btn" onclick="prevExercise()">← 이전</button>
+      <button id="aw-btn-next" class="aw-nav-btn" onclick="nextExercise()">다음 →</button>
     </div>
   </div>
 </div>
