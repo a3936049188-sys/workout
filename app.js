@@ -248,9 +248,9 @@ function showPrevRecord(name) {
 function openAddModal() {
   selectedExercise = null;
   customType = 'reps';
-  exerciseDuration = 0;
+  exerciseDuration = 20;
   document.getElementById('custom-name').value = '';
-  document.getElementById('dur-display').textContent = '없음';
+  document.getElementById('dur-display').textContent = '20분';
   document.getElementById('prev-record-section').style.display = 'none';
   document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.type-btn').forEach(b => {
@@ -304,11 +304,23 @@ const aw = {
 };
 
 // 스톱워치
-const sw = { secs: 0, running: false, interval: null };
+const sw = { secs: 0, original: 0, countdown: false, running: false, interval: null };
 
 function fmtTime(secs) {
   const m = Math.floor(secs / 60), s = secs % 60;
   return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function initStopwatch(durationSecs) {
+  clearInterval(sw.interval);
+  sw.running = false;
+  sw.countdown = durationSecs > 0;
+  sw.original = durationSecs;
+  sw.secs = durationSecs > 0 ? durationSecs : 0;
+  document.getElementById('aw-sw-display').textContent = fmtTime(sw.secs);
+  document.getElementById('aw-sw-btn').textContent = '▶ 시작';
+  // 카운트다운이면 빨간 색으로 표시 안 함 (정상 색)
+  document.getElementById('aw-sw-display').style.color = '';
 }
 
 function toggleStopwatch() {
@@ -320,7 +332,22 @@ function toggleStopwatch() {
     sw.running = true;
     document.getElementById('aw-sw-btn').textContent = '⏸ 정지';
     sw.interval = setInterval(() => {
-      sw.secs++;
+      if (sw.countdown) {
+        sw.secs = Math.max(0, sw.secs - 1);
+        // 남은 시간에 따라 색상 변경
+        const pct = sw.original > 0 ? sw.secs / sw.original : 1;
+        const disp = document.getElementById('aw-sw-display');
+        disp.style.color = pct < 0.2 ? 'var(--danger)' : pct < 0.5 ? 'var(--amber)' : '';
+        if (sw.secs <= 0) {
+          clearInterval(sw.interval);
+          sw.running = false;
+          document.getElementById('aw-sw-btn').textContent = '▶ 다시';
+          if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+          showToast('⏰ 운동 시간 완료!');
+        }
+      } else {
+        sw.secs++;
+      }
       document.getElementById('aw-sw-display').textContent = fmtTime(sw.secs);
     }, 1000);
   }
@@ -329,9 +356,22 @@ function toggleStopwatch() {
 function resetStopwatch() {
   clearInterval(sw.interval);
   sw.running = false;
-  sw.secs = 0;
-  document.getElementById('aw-sw-display').textContent = '00:00';
+  sw.secs = sw.countdown ? sw.original : 0;
+  document.getElementById('aw-sw-display').textContent = fmtTime(sw.secs);
+  document.getElementById('aw-sw-display').style.color = '';
   document.getElementById('aw-sw-btn').textContent = '▶ 시작';
+}
+
+function getPrevSets(name) {
+  const all = getAllWorkouts();
+  const today = todayKey();
+  const sorted = Object.entries(all).sort(([a],[b]) => b.localeCompare(a));
+  for (const [date, workout] of sorted) {
+    if (date >= today) continue;
+    const ex = (workout.exercises || []).find(e => e.name === name);
+    if (ex && ex.sets && ex.sets.length > 0) return ex.sets;
+  }
+  return null;
 }
 
 function startActiveWorkout() {
@@ -342,7 +382,6 @@ function startActiveWorkout() {
   aw.exercises = JSON.parse(JSON.stringify(modalWorkout.exercises));
   aw.exIdx = 0; aw.setNum = 1; aw.sets = {};
   aw.exercises.forEach((_, i) => { aw.sets[i] = []; });
-  resetStopwatch();
   document.getElementById('workout-modal').classList.remove('open');
   document.getElementById('active-workout').classList.add('visible');
   renderAW();
@@ -358,6 +397,7 @@ function renderAW() {
   document.getElementById('aw-unit').textContent = ex.type === 'time' ? '초' : '회';
   document.getElementById('aw-btn-prev').disabled = aw.exIdx === 0;
   document.getElementById('aw-btn-next').disabled = aw.exIdx === aw.exercises.length - 1;
+  initStopwatch(ex.duration || 0);
   renderAWTable();
 }
 
@@ -370,13 +410,20 @@ function renderAWTable() {
   const ex = aw.exercises[aw.exIdx];
   const unit = ex.type === 'time' ? '초' : '회';
 
-  const rowCells = sets.map((s, i) => `
-    <tr>
-      <td class="aw-row-label">세트 ${i+1}</td>
-      <td class="highlight">${s.value}${unit}</td>
-      <td>${fmtTime(s.time || 0)}</td>
-      <td style="color:var(--text-muted);font-size:12px">${s.note || '-'}</td>
-    </tr>`).join('');
+  const prevSets = getPrevSets(ex.name);
+
+  const rowCells = sets.map((s, i) => {
+    const prev = prevSets && prevSets[i];
+    const prevHtml = prev
+      ? `<div class="prev-reps-hint">전 ${prev.value}${unit}</div>` : '';
+    return `
+      <tr>
+        <td class="aw-row-label">세트 ${i+1}</td>
+        <td class="highlight">${s.value}${unit}${prevHtml}</td>
+        <td>${fmtTime(s.time || 0)}</td>
+        <td style="color:var(--text-muted);font-size:12px">${s.note || '-'}</td>
+      </tr>`;
+  }).join('');
 
   document.getElementById('aw-table').innerHTML = `
     <thead><tr><th></th><th>횟수</th><th>시간</th><th>메모</th></tr></thead>
@@ -391,8 +438,8 @@ function adjustReps(delta) {
 function completeSet() {
   const value = document.getElementById('aw-reps').value || '0';
   const note = document.getElementById('aw-note').value.trim();
-  const time = sw.secs;
-  aw.sets[aw.exIdx].push({ value, note, time });
+  const elapsed = sw.countdown ? sw.original - sw.secs : sw.secs;
+  aw.sets[aw.exIdx].push({ value, note, time: elapsed });
   aw.setNum++;
   resetStopwatch();
   renderAW();
