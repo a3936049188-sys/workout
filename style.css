@@ -1180,9 +1180,13 @@ html, body {
 
 .aw-complete-set-btn:active { transform: scale(0.98); background: #16a34a; }
 
-/* ── 세트 기록 표 (카드 없이) ── */
+/* ── 세트 기록 표 ── */
 #aw-table-section {
   width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 14px 16px;
 }
 
 .aw-table-title {
@@ -1191,7 +1195,7 @@ html, body {
   color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.8px;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .aw-table-wrap {
@@ -1202,39 +1206,39 @@ html, body {
 
 .aw-table {
   border-collapse: collapse;
-  width: 100%;
+  min-width: 100%;
   white-space: nowrap;
 }
 
 .aw-table th {
   background: var(--surface2);
   color: var(--text-muted);
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
-  padding: 10px 16px;
+  padding: 8px 20px;
   text-align: center;
-  border-bottom: 2px solid var(--border);
+  border: 1px solid var(--border);
 }
 
-.aw-table th:first-child { text-align: left; padding-left: 4px; }
+.aw-table th:first-child { padding: 8px 12px; text-align: left; }
 
 .aw-table td {
+  background: var(--bg);
   color: var(--text);
-  font-size: 16px;
-  font-weight: 600;
-  padding: 12px 16px;
+  font-size: 15px;
+  font-weight: 700;
+  padding: 10px 20px;
   text-align: center;
-  border-bottom: 1px solid var(--border);
+  border: 1px solid var(--border);
 }
 
-.aw-table tbody tr:last-child td { border-bottom: none; }
-
 .aw-row-label {
+  background: var(--surface2) !important;
   color: var(--text-muted) !important;
-  font-size: 13px !important;
+  font-size: 12px !important;
   font-weight: 700 !important;
+  padding: 10px 12px !important;
   text-align: left !important;
-  padding-left: 4px !important;
 }
 
 .aw-table td.highlight { color: var(--success); font-weight: 800; }
