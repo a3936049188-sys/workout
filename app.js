@@ -353,18 +353,17 @@ function renderAWTable() {
   const ex = aw.exercises[aw.exIdx];
   const unit = ex.type === 'time' ? '초' : '회';
 
-  const headCells = sets.map((_, i) => `<th>세트 ${i+1}</th>`).join('');
-  const repsCells = sets.map(s => `<td class="highlight">${s.value}${unit}</td>`).join('');
-  const timeCells = sets.map(s => `<td>${fmtTime(s.time || 0)}</td>`).join('');
-  const noteCells = sets.map(s => `<td style="color:var(--text-muted);font-size:12px">${s.note || '-'}</td>`).join('');
+  const rowCells = sets.map((s, i) => `
+    <tr>
+      <td class="aw-row-label">세트 ${i+1}</td>
+      <td class="highlight">${s.value}${unit}</td>
+      <td>${fmtTime(s.time || 0)}</td>
+      <td style="color:var(--text-muted);font-size:12px">${s.note || '-'}</td>
+    </tr>`).join('');
 
   document.getElementById('aw-table').innerHTML = `
-    <thead><tr><th></th>${headCells}</tr></thead>
-    <tbody>
-      <tr><td class="aw-row-label">횟수</td>${repsCells}</tr>
-      <tr><td class="aw-row-label">시간</td>${timeCells}</tr>
-      <tr><td class="aw-row-label">메모</td>${noteCells}</tr>
-    </tbody>`;
+    <thead><tr><th></th><th>횟수</th><th>시간</th><th>메모</th></tr></thead>
+    <tbody>${rowCells}</tbody>`;
 }
 
 function adjustReps(delta) {
