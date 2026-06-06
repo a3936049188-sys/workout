@@ -384,7 +384,7 @@ function startActiveWorkout() {
   aw.exercises.forEach((_, i) => { aw.sets[i] = []; });
   document.getElementById('workout-modal').classList.remove('open');
   document.getElementById('active-workout').classList.add('visible');
-  renderAW();
+  renderAWFull();
 }
 
 function renderAW() {
@@ -397,8 +397,13 @@ function renderAW() {
   document.getElementById('aw-unit').textContent = ex.type === 'time' ? '초' : '회';
   document.getElementById('aw-btn-prev').disabled = aw.exIdx === 0;
   document.getElementById('aw-btn-next').disabled = aw.exIdx === aw.exercises.length - 1;
-  initStopwatch(ex.duration || 0);
   renderAWTable();
+}
+
+function renderAWFull() {
+  const ex = aw.exercises[aw.exIdx];
+  initStopwatch(ex.duration || 0);
+  renderAW();
 }
 
 function renderAWTable() {
@@ -441,7 +446,6 @@ function completeSet() {
   const elapsed = sw.countdown ? sw.original - sw.secs : sw.secs;
   aw.sets[aw.exIdx].push({ value, note, time: elapsed });
   aw.setNum++;
-  resetStopwatch();
   renderAW();
   if (navigator.vibrate) navigator.vibrate(80);
   showToast(`✓ ${aw.sets[aw.exIdx].length}세트 완료!`);
@@ -449,19 +453,17 @@ function completeSet() {
 
 function prevExercise() {
   if (aw.exIdx > 0) {
-    resetStopwatch();
     aw.exIdx--;
     aw.setNum = aw.sets[aw.exIdx].length + 1;
-    renderAW();
+    renderAWFull();
   }
 }
 
 function nextExercise() {
   if (aw.exIdx < aw.exercises.length - 1) {
-    resetStopwatch();
     aw.exIdx++;
     aw.setNum = aw.sets[aw.exIdx].length + 1;
-    renderAW();
+    renderAWFull();
   }
 }
 
