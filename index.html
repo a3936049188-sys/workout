@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#6366f1">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="운동일지">
+  <title>운동 일지</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ── 메인 앱 ── -->
+<div id="app">
+
+  <!-- 헤더 -->
+  <header class="app-header">
+    <div class="header-top">
+      <div>
+        <div class="header-title">🏋️ 운동 일지</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- 오늘 탭 -->
+  <div id="view-today" class="view active">
+    <div class="today-date-header">
+      <h2 id="today-date"></h2>
+      <p>오늘의 운동을 기록하세요</p>
+    </div>
+    <div id="today-content"></div>
+  </div>
+
+  <!-- 히스토리 탭 -->
+  <div id="view-history" class="view">
+    <div class="section-title">운동 기록</div>
+    <div id="history-content"></div>
+  </div>
+
+  <!-- 통계 탭 -->
+  <div id="view-stats" class="view">
+    <div class="section-title">나의 통계</div>
+    <div id="stats-content"></div>
+  </div>
+
+  <!-- FAB -->
+  <button class="fab" id="fab" onclick="openAddModal()">＋</button>
+
+  <!-- 하단 탭 네비게이션 -->
+  <nav class="tab-nav">
+    <button class="tab-btn active" data-tab="today" onclick="switchTab('today')">
+      <span class="tab-icon">📝</span>
+      오늘
+    </button>
+    <button class="tab-btn" data-tab="history" onclick="switchTab('history')">
+      <span class="tab-icon">📅</span>
+      기록
+    </button>
+    <button class="tab-btn" data-tab="stats" onclick="switchTab('stats')">
+      <span class="tab-icon">📊</span>
+      통계
+    </button>
+  </nav>
+</div>
+
+<!-- ── 운동 추가 모달 ── -->
+<div id="add-modal" class="modal-overlay" onclick="if(event.target===this)closeAddModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">운동 추가</div>
+
+    <div class="exercise-category">
+      <div class="category-label">💪 상체</div>
+      <div class="exercise-grid">
+        <button class="exercise-btn" data-name="푸시업" onclick="selectPreset('푸시업','reps','💪')">💪 푸시업</button>
+        <button class="exercise-btn" data-name="와이드 푸시업" onclick="selectPreset('와이드 푸시업','reps','💪')">💪 와이드 푸시업</button>
+        <button class="exercise-btn" data-name="다이아몬드 푸시업" onclick="selectPreset('다이아몬드 푸시업','reps','💪')">💪 다이아몬드 푸시업</button>
+        <button class="exercise-btn" data-name="파이크 푸시업" onclick="selectPreset('파이크 푸시업','reps','💪')">💪 파이크 푸시업</button>
+        <button class="exercise-btn" data-name="딥스" onclick="selectPreset('딥스','reps','🤸')">🤸 딥스</button>
+        <button class="exercise-btn" data-name="친업 / 풀업" onclick="selectPreset('친업 / 풀업','reps','🏋️')">🏋️ 친업 / 풀업</button>
+      </div>
+    </div>
+
+    <div class="exercise-category">
+      <div class="category-label">🔥 코어</div>
+      <div class="exercise-grid">
+        <button class="exercise-btn" data-name="플랭크" onclick="selectPreset('플랭크','time','🔥')">🔥 플랭크</button>
+        <button class="exercise-btn" data-name="사이드 플랭크" onclick="selectPreset('사이드 플랭크','time','🔥')">🔥 사이드 플랭크</button>
+        <button class="exercise-btn" data-name="크런치" onclick="selectPreset('크런치','reps','🔥')">🔥 크런치</button>
+        <button class="exercise-btn" data-name="V업" onclick="selectPreset('V업','reps','🔥')">🔥 V업</button>
+        <button class="exercise-btn" data-name="마운틴 클라이머" onclick="selectPreset('마운틴 클라이머','reps','⚡')">⚡ 마운틴 클라이머</button>
+        <button class="exercise-btn" data-name="레그레이즈" onclick="selectPreset('레그레이즈','reps','🔥')">🔥 레그레이즈</button>
+      </div>
+    </div>
+
+    <div class="exercise-category">
+      <div class="category-label">🦵 하체</div>
+      <div class="exercise-grid">
+        <button class="exercise-btn" data-name="스쿼트" onclick="selectPreset('스쿼트','reps','🦵')">🦵 스쿼트</button>
+        <button class="exercise-btn" data-name="런지" onclick="selectPreset('런지','reps','🦵')">🦵 런지</button>
+        <button class="exercise-btn" data-name="점프 스쿼트" onclick="selectPreset('점프 스쿼트','reps','🦵')">🦵 점프 스쿼트</button>
+        <button class="exercise-btn" data-name="글루트 브릿지" onclick="selectPreset('글루트 브릿지','reps','🦵')">🦵 글루트 브릿지</button>
+        <button class="exercise-btn" data-name="카프레이즈" onclick="selectPreset('카프레이즈','reps','🦵')">🦵 카프레이즈</button>
+      </div>
+    </div>
+
+    <div class="exercise-category">
+      <div class="category-label">⚡ 전신</div>
+      <div class="exercise-grid">
+        <button class="exercise-btn" data-name="버피" onclick="selectPreset('버피','reps','⚡')">⚡ 버피</button>
+        <button class="exercise-btn" data-name="점핑잭" onclick="selectPreset('점핑잭','reps','⚡')">⚡ 점핑잭</button>
+        <button class="exercise-btn" data-name="하이니" onclick="selectPreset('하이니','reps','⚡')">⚡ 하이니</button>
+      </div>
+    </div>
+
+    <!-- 직접 입력 -->
+    <div class="exercise-category">
+      <div class="category-label">✏️ 직접 입력</div>
+      <div class="custom-input-wrap">
+        <label>운동 이름</label>
+        <input id="custom-name" class="custom-input" type="text"
+          placeholder="운동 이름을 직접 입력하세요"
+          oninput="if(this.value)document.querySelectorAll('.exercise-btn').forEach(b=>b.classList.remove('selected'))">
+        <div class="type-toggle">
+          <button class="type-btn selected" data-type="reps" onclick="setCustomType('reps')">횟수 기반</button>
+          <button class="type-btn" data-type="time" onclick="setCustomType('time')">시간 기반</button>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-confirm" onclick="confirmAddExercise()">추가하기</button>
+  </div>
+</div>
+
+<!-- ── 히스토리 상세 모달 ── -->
+<div id="detail-modal" class="modal-overlay" onclick="if(event.target===this)closeDetailModal()">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="detail-date"></div>
+    <div id="detail-content"></div>
+    <button class="btn-confirm" style="background:#64748b" onclick="closeDetailModal()">닫기</button>
+  </div>
+</div>
+
+<!-- 토스트 -->
+<div class="toast" id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

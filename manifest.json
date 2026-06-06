@@ -1,0 +1,17 @@
+{
+  "name": "운동 일지",
+  "short_name": "운동일지",
+  "description": "홈트 운동 기록 앱",
+  "start_url": "/workout/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#6366f1",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://raw.githubusercontent.com/google/material-design-icons/master/png/action/fitness_center/materialicons/48dp/2x/baseline_fitness_center_black_48dp.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    }
+  ]
+}
