@@ -1178,8 +1178,8 @@ html, body {
 
 /* 세트 완료 버튼 */
 .aw-complete-set-btn {
-  width: 88px;
-  height: 88px;
+  width: 110px;
+  height: 110px;
   flex-shrink: 0;
   background: var(--success);
   color: #fff;
