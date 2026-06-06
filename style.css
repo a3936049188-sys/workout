@@ -877,6 +877,408 @@ html, body {
 
 .hidden { display: none !important; }
 
+/* ── 운동 시작 버튼 ── */
+.btn-start-workout {
+  width: 100%;
+  padding: 15px;
+  margin-top: 10px;
+  background: var(--success);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  letter-spacing: 0.3px;
+}
+
+.btn-start-workout:active { transform: scale(0.98); background: #16a34a; }
+
+.btn-save-workout {
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* ── 시간 설정 ── */
+.duration-section { margin-bottom: 4px; }
+
+.duration-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.dur-btn {
+  padding: 7px 13px;
+  border-radius: 50px;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.dur-btn.active {
+  border-color: var(--success);
+  background: var(--success-muted);
+  color: var(--success);
+}
+
+.duration-custom-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--text-muted);
+  font-weight: 600;
+}
+
+.dur-input {
+  width: 56px;
+  padding: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.dur-input::-webkit-inner-spin-button,
+.dur-input::-webkit-outer-spin-button { opacity: 0; }
+
+.dur-input:focus { outline: none; border-color: var(--success); }
+
+/* ── 운동 중 화면 ── */
+.active-workout-screen {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 200;
+  display: none;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.active-workout-screen.visible { display: flex; }
+
+.aw-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  padding-top: max(16px, env(safe-area-inset-top));
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.aw-back-btn, .aw-finish-btn {
+  border: none;
+  background: none;
+  color: var(--text-muted);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.aw-finish-btn { color: var(--danger); }
+.aw-back-btn:active, .aw-finish-btn:active { background: var(--surface2); }
+
+.aw-header-center { text-align: center; flex: 1; }
+
+.aw-exercise-name {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.aw-progress-text {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.aw-set-badge {
+  margin: 16px 20px 0;
+  display: inline-block;
+  background: var(--primary-muted);
+  color: var(--primary-light);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 5px 16px;
+  border-radius: 50px;
+  align-self: flex-start;
+  flex-shrink: 0;
+}
+
+.aw-timer-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  flex-shrink: 0;
+}
+
+.aw-timer-display {
+  font-size: 64px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -2px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.aw-timer-bar-wrap {
+  width: 100%;
+  height: 8px;
+  background: var(--surface2);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.aw-timer-bar {
+  height: 100%;
+  border-radius: 4px;
+  background: var(--primary);
+  transition: width 0.9s linear, background 0.3s;
+  width: 100%;
+}
+
+.aw-timer-btns {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+.aw-btn-primary {
+  flex: 1;
+  padding: 13px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.aw-btn-primary:active { background: #6457d4; }
+
+.aw-btn-secondary {
+  padding: 13px 18px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.aw-inputs {
+  padding: 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.aw-input-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.aw-input-row label {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 36px;
+  flex-shrink: 0;
+}
+
+.aw-count-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.aw-count-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.aw-count-btn:active { background: var(--border); }
+
+.aw-reps-input {
+  width: 72px;
+  padding: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 22px;
+  font-weight: 800;
+  text-align: center;
+  -moz-appearance: textfield;
+}
+
+.aw-reps-input::-webkit-inner-spin-button,
+.aw-reps-input::-webkit-outer-spin-button { opacity: 0; }
+
+.aw-reps-input:focus { outline: none; border-color: var(--primary); }
+
+.aw-unit {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-muted);
+}
+
+.aw-note-input {
+  flex: 1;
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 15px;
+}
+
+.aw-note-input::placeholder { color: var(--text-muted); }
+.aw-note-input:focus { outline: none; border-color: var(--primary); }
+
+/* 완료된 세트 목록 */
+#aw-completed-sets {
+  padding: 12px 20px 0;
+  flex-shrink: 0;
+}
+
+.aw-sets-done-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.aw-sets-done {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.aw-set-done {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+}
+
+.aw-set-num-badge {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--success-muted);
+  color: var(--success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+
+.aw-set-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.aw-set-note {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex: 1;
+}
+
+/* 하단 버튼 */
+.aw-bottom {
+  padding: 16px 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+
+.aw-complete-set-btn {
+  width: 100%;
+  padding: 16px;
+  background: var(--success);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.aw-complete-set-btn:active { transform: scale(0.98); background: #16a34a; }
+
+.aw-nav-row {
+  display: flex;
+  gap: 10px;
+}
+
+.aw-nav-btn {
+  flex: 1;
+  padding: 12px;
+  background: var(--surface2);
+  color: var(--text-muted);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.aw-nav-btn:active { background: var(--border); }
+.aw-nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+
 ::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }

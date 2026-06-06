@@ -209,15 +209,37 @@ function saveModalWorkout() {
 // ── 운동 추가 모달 ──
 let selectedExercise = null;
 let customType = 'reps';
+let exerciseDuration = 0; // seconds
+
+function setExerciseDuration(secs) {
+  exerciseDuration = secs;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  const m = Math.floor(secs / 60);
+  const s = secs % 60;
+  document.getElementById('dur-min').value = m || '';
+  document.getElementById('dur-sec').value = s || '';
+}
+
+function updateDurationFromInput() {
+  const m = parseInt(document.getElementById('dur-min').value) || 0;
+  const s = parseInt(document.getElementById('dur-sec').value) || 0;
+  exerciseDuration = m * 60 + s;
+  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+}
 
 function openAddModal() {
   selectedExercise = null;
   customType = 'reps';
+  exerciseDuration = 0;
   document.getElementById('custom-name').value = '';
+  document.getElementById('dur-min').value = '';
+  document.getElementById('dur-sec').value = '';
   document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.type-btn').forEach(b => {
     b.classList.toggle('selected', b.dataset.type === 'reps');
   });
+  document.querySelectorAll('.dur-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
   document.getElementById('add-modal').classList.add('open');
 }
 
@@ -245,9 +267,9 @@ function confirmAddExercise() {
   let exercise;
 
   if (customName) {
-    exercise = { name: customName, type: customType, icon: '🏋️', sets: [] };
+    exercise = { name: customName, type: customType, icon: '🏋️', sets: [], duration: exerciseDuration };
   } else if (selectedExercise) {
-    exercise = { ...selectedExercise, sets: [] };
+    exercise = { ...selectedExercise, sets: [], duration: exerciseDuration };
   } else {
     showToast('운동을 선택하거나 직접 입력하세요');
     return;
@@ -256,7 +278,183 @@ function confirmAddExercise() {
   modalWorkout.exercises.push(exercise);
   closeAddModal();
   renderModalExercises();
-  addSet(modalWorkout.exercises.length - 1);
+}
+
+// ── 운동 중 화면 ──
+const aw = {
+  date: null,
+  exercises: [],
+  exIdx: 0,
+  setNum: 1,
+  sets: {},       // { exIdx: [{ value, note }] }
+  timerSecs: 0,
+  timerOriginal: 0,
+  timerRunning: false,
+  timerInterval: null,
+};
+
+function startActiveWorkout() {
+  if (!modalWorkout.exercises || modalWorkout.exercises.length === 0) {
+    showToast('운동을 먼저 추가하세요');
+    return;
+  }
+  aw.date = modalDate;
+  aw.exercises = JSON.parse(JSON.stringify(modalWorkout.exercises));
+  aw.exIdx = 0;
+  aw.setNum = 1;
+  aw.sets = {};
+  aw.exercises.forEach((_, i) => { aw.sets[i] = []; });
+
+  document.getElementById('workout-modal').classList.remove('open');
+  document.getElementById('active-workout').classList.add('visible');
+  renderAW();
+}
+
+function renderAW() {
+  const ex = aw.exercises[aw.exIdx];
+  document.getElementById('aw-exercise-name').textContent = `${ex.icon || '🏋️'} ${ex.name}`;
+  document.getElementById('aw-progress-text').textContent = `${aw.exIdx + 1} / ${aw.exercises.length}`;
+  document.getElementById('aw-set-label').textContent = `세트 ${aw.setNum}`;
+  document.getElementById('aw-reps').value = '0';
+  document.getElementById('aw-note').value = '';
+  document.getElementById('aw-unit').textContent = ex.type === 'time' ? '초' : '회';
+
+  // 타이머
+  clearInterval(aw.timerInterval);
+  aw.timerRunning = false;
+  aw.timerSecs = ex.duration || 0;
+  aw.timerOriginal = ex.duration || 0;
+  const timerSection = document.getElementById('aw-timer-section');
+  timerSection.style.display = ex.duration > 0 ? 'flex' : 'none';
+  document.getElementById('aw-btn-timer').textContent = '▶ 시작';
+  updateAWTimer();
+
+  // 이전 세트 목록
+  renderAWSets();
+
+  document.getElementById('aw-btn-prev').disabled = aw.exIdx === 0;
+  document.getElementById('aw-btn-next').disabled = aw.exIdx === aw.exercises.length - 1;
+}
+
+function toggleAWTimer() {
+  if (aw.timerRunning) pauseAWTimer(); else startAWTimer();
+}
+
+function startAWTimer() {
+  if (aw.timerSecs <= 0) { aw.timerSecs = aw.timerOriginal; }
+  aw.timerRunning = true;
+  document.getElementById('aw-btn-timer').textContent = '⏸ 일시정지';
+  aw.timerInterval = setInterval(() => {
+    aw.timerSecs--;
+    updateAWTimer();
+    if (aw.timerSecs <= 0) {
+      clearInterval(aw.timerInterval);
+      aw.timerRunning = false;
+      document.getElementById('aw-btn-timer').textContent = '▶ 다시';
+      if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+      showToast('⏰ 시간 완료!');
+    }
+  }, 1000);
+}
+
+function pauseAWTimer() {
+  clearInterval(aw.timerInterval);
+  aw.timerRunning = false;
+  document.getElementById('aw-btn-timer').textContent = '▶ 계속';
+}
+
+function resetAWTimer() {
+  clearInterval(aw.timerInterval);
+  aw.timerRunning = false;
+  aw.timerSecs = aw.timerOriginal;
+  document.getElementById('aw-btn-timer').textContent = '▶ 시작';
+  updateAWTimer();
+}
+
+function updateAWTimer() {
+  const m = Math.floor(aw.timerSecs / 60);
+  const s = aw.timerSecs % 60;
+  document.getElementById('aw-timer').textContent =
+    `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  const pct = aw.timerOriginal > 0 ? (aw.timerSecs / aw.timerOriginal) * 100 : 100;
+  const bar = document.getElementById('aw-timer-bar');
+  bar.style.width = `${pct}%`;
+  bar.style.background = pct < 20 ? 'var(--danger)' : pct < 50 ? 'var(--amber)' : 'var(--primary)';
+}
+
+function adjustReps(delta) {
+  const input = document.getElementById('aw-reps');
+  input.value = Math.max(0, (parseInt(input.value) || 0) + delta);
+}
+
+function completeSet() {
+  const value = document.getElementById('aw-reps').value || '0';
+  const note = document.getElementById('aw-note').value.trim();
+  aw.sets[aw.exIdx].push({ value, note });
+  aw.setNum++;
+  clearInterval(aw.timerInterval);
+  aw.timerRunning = false;
+  aw.timerSecs = aw.timerOriginal;
+  renderAW();
+  if (navigator.vibrate) navigator.vibrate(80);
+  showToast(`✓ ${aw.sets[aw.exIdx].length}세트 완료!`);
+}
+
+function renderAWSets() {
+  const sets = aw.sets[aw.exIdx] || [];
+  const container = document.getElementById('aw-completed-sets');
+  if (sets.length === 0) { container.innerHTML = ''; return; }
+
+  const ex = aw.exercises[aw.exIdx];
+  container.innerHTML = `
+    <div class="aw-sets-done-title" style="padding:0 0 6px">완료한 세트</div>
+    <div class="aw-sets-done">
+      ${sets.map((s, i) => `
+        <div class="aw-set-done">
+          <div class="aw-set-num-badge">${i+1}</div>
+          <span class="aw-set-value">${s.value} ${ex.type === 'time' ? '초' : '회'}</span>
+          <span class="aw-set-note">${s.note}</span>
+        </div>`).join('')}
+    </div>`;
+}
+
+function prevExercise() {
+  if (aw.exIdx > 0) {
+    clearInterval(aw.timerInterval);
+    aw.exIdx--;
+    aw.setNum = aw.sets[aw.exIdx].length + 1;
+    renderAW();
+  }
+}
+
+function nextExercise() {
+  if (aw.exIdx < aw.exercises.length - 1) {
+    clearInterval(aw.timerInterval);
+    aw.exIdx++;
+    aw.setNum = aw.sets[aw.exIdx].length + 1;
+    renderAW();
+  }
+}
+
+function finishActiveWorkout() {
+  aw.exercises.forEach((ex, i) => {
+    if (aw.sets[i] && aw.sets[i].length > 0) ex.sets = aw.sets[i];
+  });
+  const all = getAllWorkouts();
+  all[aw.date] = { exercises: aw.exercises, savedAt: new Date().toISOString() };
+  saveAllWorkouts(all);
+  clearInterval(aw.timerInterval);
+  document.getElementById('active-workout').classList.remove('visible');
+  renderCalendar();
+  showToast('🎉 운동 완료! 저장됐어요');
+}
+
+function exitActiveWorkout() {
+  const hasSets = Object.values(aw.sets).some(s => s.length > 0);
+  if (hasSets && !confirm('운동 중인 기록이 있어요. 저장하지 않고 나갈까요?')) return;
+  clearInterval(aw.timerInterval);
+  document.getElementById('active-workout').classList.remove('visible');
+  openWorkoutModal(aw.date);
 }
 
 // ── 통계 ──

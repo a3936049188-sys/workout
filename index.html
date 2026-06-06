@@ -104,7 +104,8 @@
     </div>
     <div id="modal-exercise-list"></div>
     <button class="btn-add-exercise" onclick="openAddModal()">＋ 운동 추가</button>
-    <button class="btn-save-workout" onclick="saveModalWorkout()">✅ 저장</button>
+    <button class="btn-start-workout" onclick="startActiveWorkout()">▶ 운동 시작</button>
+    <button class="btn-save-workout" onclick="saveModalWorkout()">저장만 하기</button>
   </div>
 </div>
 
@@ -165,7 +166,75 @@
         </div>
       </div>
     </div>
+    <!-- 시간 설정 -->
+    <div class="duration-section">
+      <div class="category-label">⏱ 세트당 시간 (선택)</div>
+      <div class="duration-presets">
+        <button class="dur-btn active" onclick="setExerciseDuration(0)">없음</button>
+        <button class="dur-btn" onclick="setExerciseDuration(30)">30초</button>
+        <button class="dur-btn" onclick="setExerciseDuration(60)">1분</button>
+        <button class="dur-btn" onclick="setExerciseDuration(90)">1분30초</button>
+        <button class="dur-btn" onclick="setExerciseDuration(120)">2분</button>
+        <button class="dur-btn" onclick="setExerciseDuration(180)">3분</button>
+      </div>
+      <div class="duration-custom-row">
+        <input type="number" id="dur-min" class="dur-input" placeholder="0" min="0" inputmode="numeric" onchange="updateDurationFromInput()"> 분
+        <input type="number" id="dur-sec" class="dur-input" placeholder="0" min="0" max="59" inputmode="numeric" onchange="updateDurationFromInput()"> 초
+      </div>
+    </div>
+
     <button class="btn-confirm" onclick="confirmAddExercise()">추가하기</button>
+  </div>
+</div>
+
+<!-- ── 운동 중 화면 ── -->
+<div id="active-workout" class="active-workout-screen">
+  <div class="aw-header">
+    <button class="aw-back-btn" onclick="exitActiveWorkout()">← 나가기</button>
+    <div class="aw-header-center">
+      <div id="aw-exercise-name" class="aw-exercise-name"></div>
+      <div id="aw-progress-text" class="aw-progress-text"></div>
+    </div>
+    <button class="aw-finish-btn" onclick="finishActiveWorkout()">종료</button>
+  </div>
+
+  <div class="aw-set-badge" id="aw-set-label">세트 1</div>
+
+  <div class="aw-timer-section" id="aw-timer-section">
+    <div class="aw-timer-display" id="aw-timer">00:00</div>
+    <div class="aw-timer-bar-wrap">
+      <div class="aw-timer-bar" id="aw-timer-bar"></div>
+    </div>
+    <div class="aw-timer-btns">
+      <button id="aw-btn-timer" class="aw-btn-primary" onclick="toggleAWTimer()">▶ 시작</button>
+      <button class="aw-btn-secondary" onclick="resetAWTimer()">↺</button>
+    </div>
+  </div>
+
+  <div class="aw-inputs">
+    <div class="aw-input-row">
+      <label>횟수</label>
+      <div class="aw-count-wrap">
+        <button class="aw-count-btn" onclick="adjustReps(-1)">−</button>
+        <input type="number" id="aw-reps" class="aw-reps-input" value="0" min="0" inputmode="numeric">
+        <button class="aw-count-btn" onclick="adjustReps(1)">＋</button>
+        <span class="aw-unit" id="aw-unit">회</span>
+      </div>
+    </div>
+    <div class="aw-input-row">
+      <label>메모</label>
+      <input type="text" id="aw-note" class="aw-note-input" placeholder="메모 (선택)">
+    </div>
+  </div>
+
+  <div id="aw-completed-sets"></div>
+
+  <div class="aw-bottom">
+    <button class="aw-complete-set-btn" onclick="completeSet()">✓ 세트 완료</button>
+    <div class="aw-nav-row">
+      <button id="aw-btn-prev" class="aw-nav-btn" onclick="prevExercise()">← 이전 운동</button>
+      <button id="aw-btn-next" class="aw-nav-btn" onclick="nextExercise()">다음 운동 →</button>
+    </div>
   </div>
 </div>
 
