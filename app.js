@@ -104,9 +104,6 @@ function openWorkoutModal(dateStr) {
   modalWorkout = JSON.parse(JSON.stringify(all[dateStr] || { exercises: [] }));
 
   document.getElementById('modal-date-label').textContent = formatDateKo(dateStr);
-  document.getElementById('time-setting-panel').style.display = 'none';
-  document.getElementById('time-setting-preview').textContent = `${workoutDuration}분`;
-  document.getElementById('workout-dur-display').textContent = `${workoutDuration}분`;
   renderModalExercises();
   document.getElementById('workout-modal').classList.add('open');
 }
@@ -209,25 +206,10 @@ function saveModalWorkout() {
   showToast('✅ 저장됐어요!');
 }
 
-// ── 운동 시간 (워크아웃 모달) ──
-let workoutDuration = 20; // minutes
-
-function toggleTimeSetting() {
-  const panel = document.getElementById('time-setting-panel');
-  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-}
-
-function adjWorkoutDuration(delta) {
-  workoutDuration = Math.max(0, workoutDuration + delta);
-  const label = workoutDuration === 0 ? '없음' : `${workoutDuration}분`;
-  document.getElementById('workout-dur-display').textContent = label;
-  document.getElementById('time-setting-preview').textContent = label;
-}
-
 // ── 운동 추가 모달 ──
 let selectedExercise = null;
 let customType = 'reps';
-let exerciseDuration = 0;
+let exerciseDuration = 0; // minutes (total workout time)
 
 function adjDuration(delta) {
   exerciseDuration = Math.max(0, exerciseDuration + delta);
@@ -399,10 +381,7 @@ function startActiveWorkout() {
   aw.date = modalDate;
   aw.exercises = JSON.parse(JSON.stringify(modalWorkout.exercises));
   aw.exIdx = 0; aw.setNum = 1; aw.sets = {};
-  aw.exercises.forEach((ex, i) => {
-    ex.duration = workoutDuration * 60;
-    aw.sets[i] = [];
-  });
+  aw.exercises.forEach((_, i) => { aw.sets[i] = []; });
   document.getElementById('workout-modal').classList.remove('open');
   document.getElementById('active-workout').classList.add('visible');
   renderAWFull();
