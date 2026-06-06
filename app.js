@@ -393,7 +393,6 @@ function renderAW() {
   document.getElementById('aw-progress-text').textContent = `${aw.exIdx + 1} / ${aw.exercises.length}`;
   document.getElementById('aw-set-label').textContent = `세트 ${aw.setNum}`;
   document.getElementById('aw-reps').value = '0';
-  document.getElementById('aw-note').value = '';
   document.getElementById('aw-unit').textContent = ex.type === 'time' ? '초' : '회';
   document.getElementById('aw-btn-prev').disabled = aw.exIdx === 0;
   document.getElementById('aw-btn-next').disabled = aw.exIdx === aw.exercises.length - 1;
