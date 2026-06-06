@@ -430,7 +430,7 @@ function renderAWTable() {
   }).join('');
 
   document.getElementById('aw-table').innerHTML = `
-    <thead><tr><th></th><th>횟수</th><th>시간</th></tr></thead>
+    <thead><tr><th></th><th>횟수</th><th>타이머</th></tr></thead>
     <tbody>${rowCells}</tbody>`;
 }
 
