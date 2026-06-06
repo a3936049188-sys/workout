@@ -4,8 +4,8 @@
   "description": "홈트 운동 기록 앱",
   "start_url": "/workout/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#6366f1",
+  "background_color": "#0e0f1a",
+  "theme_color": "#0e0f1a",
   "orientation": "portrait",
   "icons": [
     {
