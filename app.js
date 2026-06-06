@@ -134,6 +134,33 @@ function renderExerciseCard(ex, idx) {
   const sets = ex.sets || [];
   const summary = sets.length > 0 ? `${sets.length}세트` : '세트 없음';
 
+  const setsHtml = `
+    <div class="sets-container">
+      ${sets.length > 0 ? `
+        <div class="sets-header">
+          <span>세트</span>
+          <span>${ex.type === 'time' ? '시간(초)' : '횟수'}</span>
+          <span>메모</span>
+          <span></span>
+        </div>
+        ${sets.map((s, si) => `
+          <div class="set-row">
+            <div class="set-num">${si+1}</div>
+            <input type="number" class="set-input" value="${s.value || ''}"
+              placeholder="${ex.type === 'time' ? '초' : '회'}"
+              onchange="updateSet(${idx},${si},'value',this.value)"
+              inputmode="numeric">
+            <input type="text" class="set-input" value="${s.note || ''}"
+              placeholder="-"
+              onchange="updateSet(${idx},${si},'note',this.value)">
+            <button class="btn-delete-set" onclick="deleteSet(${idx},${si})">×</button>
+          </div>`).join('')}
+      ` : ''}
+      <button class="btn-add-set" onclick="addSet(${idx})">
+        ＋ ${sets.length === 0 ? '첫 세트 추가' : '세트 추가'}
+      </button>
+    </div>`;
+
   return `
     <div class="exercise-card">
       <div class="exercise-header">
@@ -146,6 +173,7 @@ function renderExerciseCard(ex, idx) {
         </div>
         <button class="btn-sm btn-danger-sm" onclick="deleteExercise(${idx})">삭제</button>
       </div>
+      ${setsHtml}
     </div>`;
 }
 
