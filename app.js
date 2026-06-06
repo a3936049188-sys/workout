@@ -209,23 +209,40 @@ function saveModalWorkout() {
 // ── 운동 추가 모달 ──
 let selectedExercise = null;
 let customType = 'reps';
-let exerciseDuration = 0; // seconds
+let exerciseDuration = 0; // minutes (total workout time)
 
-function setExerciseDuration(secs) {
-  exerciseDuration = secs;
-  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
-  event.target.classList.add('active');
-  const m = Math.floor(secs / 60);
-  const s = secs % 60;
-  document.getElementById('dur-min').value = m || '';
-  document.getElementById('dur-sec').value = s || '';
+function adjDuration(delta) {
+  exerciseDuration = Math.max(0, exerciseDuration + delta);
+  document.getElementById('dur-display').textContent =
+    exerciseDuration === 0 ? '없음' : `${exerciseDuration}분`;
 }
 
-function updateDurationFromInput() {
-  const m = parseInt(document.getElementById('dur-min').value) || 0;
-  const s = parseInt(document.getElementById('dur-sec').value) || 0;
-  exerciseDuration = m * 60 + s;
-  document.querySelectorAll('.dur-btn').forEach(b => b.classList.remove('active'));
+function showPrevRecord(name) {
+  const all = getAllWorkouts();
+  const today = todayKey();
+  const sorted = Object.entries(all).sort(([a],[b]) => b.localeCompare(a));
+
+  let found = null;
+  for (const [date, workout] of sorted) {
+    if (date >= today) continue;
+    const ex = (workout.exercises || []).find(e => e.name === name);
+    if (ex && ex.sets && ex.sets.length > 0) { found = { date, ex }; break; }
+  }
+
+  const section = document.getElementById('prev-record-section');
+  if (!found) { section.style.display = 'none'; return; }
+
+  const unit = found.ex.type === 'time' ? '초' : '회';
+  section.style.display = 'block';
+  document.getElementById('prev-record-content').innerHTML = `
+    <div class="prev-record-date">${formatDateKo(found.date)}</div>
+    ${found.ex.sets.map((s, i) => `
+      <div class="prev-set-row">
+        <span class="prev-set-num">세트 ${i+1}</span>
+        <span class="prev-set-val">${s.value || 0}${unit}</span>
+        ${s.time ? `<span class="prev-set-time">${fmtTime(s.time)}</span>` : ''}
+        ${s.note ? `<span class="prev-set-note">${s.note}</span>` : ''}
+      </div>`).join('')}`;
 }
 
 function openAddModal() {
@@ -233,13 +250,12 @@ function openAddModal() {
   customType = 'reps';
   exerciseDuration = 0;
   document.getElementById('custom-name').value = '';
-  document.getElementById('dur-min').value = '';
-  document.getElementById('dur-sec').value = '';
+  document.getElementById('dur-display').textContent = '없음';
+  document.getElementById('prev-record-section').style.display = 'none';
   document.querySelectorAll('.exercise-btn').forEach(b => b.classList.remove('selected'));
   document.querySelectorAll('.type-btn').forEach(b => {
     b.classList.toggle('selected', b.dataset.type === 'reps');
   });
-  document.querySelectorAll('.dur-btn').forEach((b, i) => b.classList.toggle('active', i === 0));
   document.getElementById('add-modal').classList.add('open');
 }
 
@@ -253,6 +269,7 @@ function selectPreset(name, type, icon) {
     b.classList.toggle('selected', b.dataset.name === name);
   });
   document.getElementById('custom-name').value = '';
+  showPrevRecord(name);
 }
 
 function setCustomType(type) {
@@ -267,9 +284,9 @@ function confirmAddExercise() {
   let exercise;
 
   if (customName) {
-    exercise = { name: customName, type: customType, icon: '🏋️', sets: [], duration: exerciseDuration };
+    exercise = { name: customName, type: customType, icon: '🏋️', sets: [], duration: exerciseDuration * 60 };
   } else if (selectedExercise) {
-    exercise = { ...selectedExercise, sets: [], duration: exerciseDuration };
+    exercise = { ...selectedExercise, sets: [], duration: exerciseDuration * 60 };
   } else {
     showToast('운동을 선택하거나 직접 입력하세요');
     return;

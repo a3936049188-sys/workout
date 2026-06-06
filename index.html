@@ -159,28 +159,27 @@
       <div class="category-label">✏️ 직접 입력</div>
       <div class="custom-input-wrap">
         <input id="custom-name" class="custom-input" type="text" placeholder="운동 이름 직접 입력"
-          oninput="if(this.value)document.querySelectorAll('.exercise-btn').forEach(b=>b.classList.remove('selected'))">
+          oninput="document.querySelectorAll('.exercise-btn').forEach(b=>b.classList.remove('selected'));if(this.value.length>1)showPrevRecord(this.value)">
         <div class="type-toggle">
           <button class="type-btn selected" data-type="reps" onclick="setCustomType('reps')">횟수</button>
           <button class="type-btn" data-type="time" onclick="setCustomType('time')">시간</button>
         </div>
       </div>
     </div>
-    <!-- 시간 설정 -->
+    <!-- 운동 전체 시간 -->
     <div class="duration-section">
-      <div class="category-label">⏱ 세트당 시간 (선택)</div>
-      <div class="duration-presets">
-        <button class="dur-btn active" onclick="setExerciseDuration(0)">없음</button>
-        <button class="dur-btn" onclick="setExerciseDuration(30)">30초</button>
-        <button class="dur-btn" onclick="setExerciseDuration(60)">1분</button>
-        <button class="dur-btn" onclick="setExerciseDuration(90)">1분30초</button>
-        <button class="dur-btn" onclick="setExerciseDuration(120)">2분</button>
-        <button class="dur-btn" onclick="setExerciseDuration(180)">3분</button>
+      <div class="category-label">⏱ 운동 시간 (선택)</div>
+      <div class="duration-adj-row">
+        <button class="dur-adj-btn" onclick="adjDuration(-1)">−</button>
+        <span id="dur-display">없음</span>
+        <button class="dur-adj-btn" onclick="adjDuration(1)">＋</button>
       </div>
-      <div class="duration-custom-row">
-        <input type="number" id="dur-min" class="dur-input" placeholder="0" min="0" inputmode="numeric" onchange="updateDurationFromInput()"> 분
-        <input type="number" id="dur-sec" class="dur-input" placeholder="0" min="0" max="59" inputmode="numeric" onchange="updateDurationFromInput()"> 초
-      </div>
+    </div>
+
+    <!-- 직전 기록 -->
+    <div id="prev-record-section" class="prev-record-section" style="display:none">
+      <div class="category-label">📋 직전 기록</div>
+      <div id="prev-record-content"></div>
     </div>
 
     <button class="btn-confirm" onclick="confirmAddExercise()">추가하기</button>

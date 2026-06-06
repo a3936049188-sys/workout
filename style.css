@@ -909,59 +909,91 @@ html, body {
 }
 
 /* ── 시간 설정 ── */
-.duration-section { margin-bottom: 4px; }
+.duration-section { margin-bottom: 16px; }
 
-.duration-presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 7px;
-  margin-bottom: 10px;
-}
-
-.dur-btn {
-  padding: 7px 13px;
-  border-radius: 50px;
-  border: 1.5px solid var(--border);
-  background: var(--surface2);
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.dur-btn.active {
-  border-color: var(--success);
-  background: var(--success-muted);
-  color: var(--success);
-}
-
-.duration-custom-row {
+.duration-adj-row {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  color: var(--text-muted);
-  font-weight: 600;
+  gap: 0;
+  background: var(--surface2);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
 
-.dur-input {
-  width: 56px;
-  padding: 8px;
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius-sm);
-  background: var(--surface2);
+.dur-adj-btn {
+  width: 52px;
+  height: 48px;
+  border: none;
+  background: transparent;
   color: var(--text);
+  font-size: 24px;
+  font-weight: 300;
+  cursor: pointer;
+  transition: background 0.15s;
+  flex-shrink: 0;
+}
+
+.dur-adj-btn:active { background: var(--border); }
+
+#dur-display {
+  flex: 1;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+/* ── 직전 기록 ── */
+.prev-record-section {
+  margin-bottom: 16px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 12px 14px;
+}
+
+.prev-record-date {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.prev-set-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.prev-set-row:last-child { border-bottom: none; }
+
+.prev-set-num {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-muted);
+  width: 40px;
+  flex-shrink: 0;
+}
+
+.prev-set-val {
   font-size: 15px;
   font-weight: 700;
-  text-align: center;
-  -moz-appearance: textfield;
+  color: var(--primary-light);
 }
 
-.dur-input::-webkit-inner-spin-button,
-.dur-input::-webkit-outer-spin-button { opacity: 0; }
+.prev-set-time {
+  font-size: 13px;
+  color: var(--text-muted);
+}
 
-.dur-input:focus { outline: none; border-color: var(--success); }
+.prev-set-note {
+  font-size: 12px;
+  color: var(--text-muted);
+  flex: 1;
+  text-align: right;
+}
 
 /* ── 운동 중 화면 ── */
 .active-workout-screen {
