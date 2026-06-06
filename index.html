@@ -164,11 +164,16 @@
     <!-- 세트 배지 -->
     <div class="aw-set-badge" id="aw-set-label">세트 1</div>
 
-    <!-- 스톱워치 -->
-    <div class="aw-sw-display" id="aw-sw-display">00:00</div>
-    <div class="aw-sw-btns">
-      <button id="aw-sw-btn" class="aw-btn-primary" onclick="toggleStopwatch()">▶ 시작</button>
-      <button class="aw-btn-secondary" onclick="resetStopwatch()">↺</button>
+    <!-- 시간 + 세트 완료 한 줄 -->
+    <div class="aw-timer-complete-row">
+      <div class="aw-sw-left">
+        <div class="aw-sw-display" id="aw-sw-display">00:00</div>
+        <div class="aw-sw-mini-btns">
+          <button id="aw-sw-btn" class="aw-sw-mini-start" onclick="toggleStopwatch()">▶</button>
+          <button class="aw-sw-mini-reset" onclick="resetStopwatch()">↺</button>
+        </div>
+      </div>
+      <button class="aw-complete-set-btn" onclick="completeSet()">✓ 세트<br>완료</button>
     </div>
 
     <!-- 횟수 입력 -->
@@ -178,9 +183,6 @@
       <span class="aw-unit" id="aw-unit">회</span>
       <button class="aw-count-btn" onclick="adjustReps(1)">＋</button>
     </div>
-
-    <!-- 세트 완료 버튼 -->
-    <button class="aw-complete-set-btn" onclick="completeSet()">✓ 세트 완료</button>
 
     <!-- 세트 기록 표 -->
     <div id="aw-table-section" style="display:none">
