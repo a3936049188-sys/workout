@@ -426,12 +426,11 @@ function renderAWTable() {
         <td class="aw-row-label">세트 ${i+1}</td>
         <td class="highlight">${s.value}${unit}${prevHtml}</td>
         <td>${fmtTime(s.time || 0)}</td>
-        <td style="color:var(--text-muted);font-size:12px">${s.note || '-'}</td>
       </tr>`;
   }).join('');
 
   document.getElementById('aw-table').innerHTML = `
-    <thead><tr><th></th><th>횟수</th><th>시간</th><th>메모</th></tr></thead>
+    <thead><tr><th></th><th>횟수</th><th>시간</th></tr></thead>
     <tbody>${rowCells}</tbody>`;
 }
 
@@ -442,9 +441,8 @@ function adjustReps(delta) {
 
 function completeSet() {
   const value = document.getElementById('aw-reps').value || '0';
-  const note = document.getElementById('aw-note').value.trim();
   const elapsed = sw.countdown ? sw.original - sw.secs : sw.secs;
-  aw.sets[aw.exIdx].push({ value, note, time: elapsed });
+  aw.sets[aw.exIdx].push({ value, time: elapsed });
   aw.setNum++;
   renderAW();
   if (navigator.vibrate) navigator.vibrate(80);
