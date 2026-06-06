@@ -876,36 +876,52 @@ html, body {
 
 .hidden { display: none !important; }
 
+/* ── 시간 설정 버튼 ── */
+.btn-time-setting {
+  width: 100%;
+  padding: 14px 16px;
+  margin-top: 10px;
+  background: var(--surface2);
+  color: var(--text);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: border-color 0.15s;
+}
+
+.btn-time-setting:active { border-color: var(--primary); }
+
+#time-setting-preview {
+  color: var(--primary-light);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.time-setting-panel {
+  padding: 12px 4px 4px;
+}
+
 /* ── 운동 시작 버튼 ── */
 .btn-start-workout {
   width: 100%;
-  padding: 15px;
+  padding: 16px;
   margin-top: 10px;
   background: var(--success);
   color: #fff;
   border: none;
   border-radius: var(--radius);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 800;
   cursor: pointer;
   transition: background 0.15s, transform 0.1s;
-  letter-spacing: 0.3px;
 }
 
 .btn-start-workout:active { transform: scale(0.98); background: #16a34a; }
-
-.btn-save-workout {
-  width: 100%;
-  padding: 13px;
-  margin-top: 8px;
-  background: transparent;
-  color: var(--text-muted);
-  border: 1.5px solid var(--border);
-  border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
 /* ── 시간 설정 ── */
 .duration-section { margin-bottom: 16px; }

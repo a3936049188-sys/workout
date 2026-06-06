@@ -63,9 +63,22 @@
       <button class="modal-close-btn" onclick="closeWorkoutModal()">✕</button>
     </div>
     <div id="modal-exercise-list"></div>
-    <button class="btn-add-exercise" onclick="openAddModal()">＋ 운동 추가</button>
+
+    <button class="btn-add-exercise" onclick="openAddModal()">＋ 운동 추가하기</button>
+
+    <button class="btn-time-setting" id="btn-time-setting" onclick="toggleTimeSetting()">
+      ⏱ 시간 설정
+      <span id="time-setting-preview">20분</span>
+    </button>
+    <div id="time-setting-panel" class="time-setting-panel" style="display:none">
+      <div class="duration-adj-row">
+        <button class="dur-adj-btn" onclick="adjWorkoutDuration(-1)">−</button>
+        <span id="workout-dur-display">20분</span>
+        <button class="dur-adj-btn" onclick="adjWorkoutDuration(1)">＋</button>
+      </div>
+    </div>
+
     <button class="btn-start-workout" onclick="startActiveWorkout()">▶ 운동 시작</button>
-    <button class="btn-save-workout" onclick="saveModalWorkout()">저장만 하기</button>
   </div>
 </div>
 
