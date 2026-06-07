@@ -119,11 +119,7 @@ function renderModalExercises() {
   const exercises = modalWorkout.exercises || [];
 
   if (exercises.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px 0;color:var(--text-muted)">
-        <div style="font-size:40px;margin-bottom:8px">🏋️</div>
-        <p style="font-size:14px">운동을 추가해보세요</p>
-      </div>`;
+    container.innerHTML = '';
     return;
   }
 
@@ -131,49 +127,15 @@ function renderModalExercises() {
 }
 
 function renderExerciseCard(ex, idx) {
-  const sets = ex.sets || [];
-  const summary = sets.length > 0 ? `${sets.length}세트` : '세트 없음';
-
-  const setsHtml = `
-    <div class="sets-container">
-      ${sets.length > 0 ? `
-        <div class="sets-header">
-          <span>세트</span>
-          <span>${ex.type === 'time' ? '시간(초)' : '횟수'}</span>
-          <span>메모</span>
-          <span></span>
-        </div>
-        ${sets.map((s, si) => `
-          <div class="set-row">
-            <div class="set-num">${si+1}</div>
-            <input type="number" class="set-input" value="${s.value || ''}"
-              placeholder="${ex.type === 'time' ? '초' : '회'}"
-              onchange="updateSet(${idx},${si},'value',this.value)"
-              inputmode="numeric">
-            <input type="text" class="set-input" value="${s.note || ''}"
-              placeholder="-"
-              onchange="updateSet(${idx},${si},'note',this.value)">
-            <button class="btn-delete-set" onclick="deleteSet(${idx},${si})">×</button>
-          </div>`).join('')}
-      ` : ''}
-      <button class="btn-add-set" onclick="addSet(${idx})">
-        ＋ ${sets.length === 0 ? '첫 세트 추가' : '세트 추가'}
-      </button>
-    </div>`;
-
   return `
     <div class="exercise-card">
       <div class="exercise-header">
         <div class="exercise-name-wrap">
           <div class="exercise-icon">${ex.icon || '🏋️'}</div>
-          <div>
-            <div class="exercise-name">${ex.name}</div>
-            <div class="exercise-summary">${summary}</div>
-          </div>
+          <div class="exercise-name">${ex.name}</div>
         </div>
         <button class="btn-sm btn-danger-sm" onclick="deleteExercise(${idx})">삭제</button>
       </div>
-      ${setsHtml}
     </div>`;
 }
 
@@ -246,10 +208,17 @@ function showPrevRecord(name) {
 }
 
 function toggleCat(btn) {
-  const body = btn.nextElementSibling;
   const isOpen = btn.classList.contains('open');
-  btn.classList.toggle('open', !isOpen);
-  body.style.display = isOpen ? 'none' : 'block';
+  // 모든 카테고리 닫기
+  document.querySelectorAll('.cat-toggle').forEach(b => {
+    b.classList.remove('open');
+    b.nextElementSibling.style.display = 'none';
+  });
+  // 클릭한 것만 열기 (이미 열려있으면 그냥 닫힌 상태 유지)
+  if (!isOpen) {
+    btn.classList.add('open');
+    btn.nextElementSibling.style.display = 'block';
+  }
 }
 
 function openAddModal() {

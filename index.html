@@ -138,10 +138,6 @@
       <div class="custom-input-wrap">
         <input id="custom-name" class="custom-input" type="text" placeholder="운동 이름 직접 입력"
           oninput="document.querySelectorAll('.exercise-btn').forEach(b=>b.classList.remove('selected'));if(this.value.length>1)showPrevRecord(this.value)">
-        <div class="type-toggle">
-          <button class="type-btn selected" data-type="reps" onclick="setCustomType('reps')">횟수</button>
-          <button class="type-btn" data-type="time" onclick="setCustomType('time')">시간</button>
-        </div>
       </div>
     </div>
     <!-- 운동 전체 시간 -->
