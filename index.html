@@ -64,43 +64,73 @@
     <div class="modal-title">운동 추가</div>
 
     <div class="exercise-category">
-      <div class="category-label">💪 상체</div>
-      <div class="exercise-grid">
-        <button class="exercise-btn" data-name="푸시업" onclick="selectPreset('푸시업','reps','💪')">💪 푸시업</button>
-        <button class="exercise-btn" data-name="와이드 푸시업" onclick="selectPreset('와이드 푸시업','reps','💪')">💪 와이드 푸시업</button>
-        <button class="exercise-btn" data-name="다이아몬드 푸시업" onclick="selectPreset('다이아몬드 푸시업','reps','💪')">💪 다이아몬드</button>
-        <button class="exercise-btn" data-name="파이크 푸시업" onclick="selectPreset('파이크 푸시업','reps','💪')">💪 파이크 푸시업</button>
-        <button class="exercise-btn" data-name="딥스" onclick="selectPreset('딥스','reps','🤸')">🤸 딥스</button>
-        <button class="exercise-btn" data-name="친업 / 풀업" onclick="selectPreset('친업 / 풀업','reps','🏋️')">🏋️ 친업 / 풀업</button>
+      <button class="cat-toggle" onclick="toggleCat(this)">
+        <span>💪 상체</span><span class="cat-arrow">›</span>
+      </button>
+      <div class="cat-body">
+        <div class="exercise-grid">
+          <button class="exercise-btn" data-name="푸시업" onclick="selectPreset('푸시업','reps','💪')">💪 푸시업</button>
+          <button class="exercise-btn" data-name="와이드 푸시업" onclick="selectPreset('와이드 푸시업','reps','💪')">💪 와이드 푸시업</button>
+          <button class="exercise-btn" data-name="다이아몬드 푸시업" onclick="selectPreset('다이아몬드 푸시업','reps','💪')">💪 다이아몬드</button>
+          <button class="exercise-btn" data-name="파이크 푸시업" onclick="selectPreset('파이크 푸시업','reps','💪')">💪 파이크 푸시업</button>
+          <button class="exercise-btn" data-name="딥스" onclick="selectPreset('딥스','reps','🤸')">🤸 딥스</button>
+          <button class="exercise-btn" data-name="친업 / 풀업" onclick="selectPreset('친업 / 풀업','reps','🏋️')">🏋️ 친업 / 풀업</button>
+        </div>
       </div>
     </div>
     <div class="exercise-category">
-      <div class="category-label">🔥 코어</div>
-      <div class="exercise-grid">
-        <button class="exercise-btn" data-name="플랭크" onclick="selectPreset('플랭크','time','🔥')">🔥 플랭크</button>
-        <button class="exercise-btn" data-name="사이드 플랭크" onclick="selectPreset('사이드 플랭크','time','🔥')">🔥 사이드 플랭크</button>
-        <button class="exercise-btn" data-name="크런치" onclick="selectPreset('크런치','reps','🔥')">🔥 크런치</button>
-        <button class="exercise-btn" data-name="V업" onclick="selectPreset('V업','reps','🔥')">🔥 V업</button>
-        <button class="exercise-btn" data-name="마운틴 클라이머" onclick="selectPreset('마운틴 클라이머','reps','⚡')">⚡ 마운틴 클라이머</button>
-        <button class="exercise-btn" data-name="레그레이즈" onclick="selectPreset('레그레이즈','reps','🔥')">🔥 레그레이즈</button>
+      <button class="cat-toggle" onclick="toggleCat(this)">
+        <span>🔥 코어</span><span class="cat-arrow">›</span>
+      </button>
+      <div class="cat-body">
+        <div class="exercise-grid">
+          <button class="exercise-btn" data-name="플랭크" onclick="selectPreset('플랭크','time','🔥')">🔥 플랭크</button>
+          <button class="exercise-btn" data-name="사이드 플랭크" onclick="selectPreset('사이드 플랭크','time','🔥')">🔥 사이드 플랭크</button>
+          <button class="exercise-btn" data-name="크런치" onclick="selectPreset('크런치','reps','🔥')">🔥 크런치</button>
+          <button class="exercise-btn" data-name="V업" onclick="selectPreset('V업','reps','🔥')">🔥 V업</button>
+          <button class="exercise-btn" data-name="마운틴 클라이머" onclick="selectPreset('마운틴 클라이머','reps','⚡')">⚡ 마운틴 클라이머</button>
+          <button class="exercise-btn" data-name="레그레이즈" onclick="selectPreset('레그레이즈','reps','🔥')">🔥 레그레이즈</button>
+        </div>
       </div>
     </div>
     <div class="exercise-category">
-      <div class="category-label">🦵 하체</div>
-      <div class="exercise-grid">
-        <button class="exercise-btn" data-name="스쿼트" onclick="selectPreset('스쿼트','reps','🦵')">🦵 스쿼트</button>
-        <button class="exercise-btn" data-name="런지" onclick="selectPreset('런지','reps','🦵')">🦵 런지</button>
-        <button class="exercise-btn" data-name="점프 스쿼트" onclick="selectPreset('점프 스쿼트','reps','🦵')">🦵 점프 스쿼트</button>
-        <button class="exercise-btn" data-name="글루트 브릿지" onclick="selectPreset('글루트 브릿지','reps','🦵')">🦵 글루트 브릿지</button>
-        <button class="exercise-btn" data-name="카프레이즈" onclick="selectPreset('카프레이즈','reps','🦵')">🦵 카프레이즈</button>
+      <button class="cat-toggle" onclick="toggleCat(this)">
+        <span>🦵 하체</span><span class="cat-arrow">›</span>
+      </button>
+      <div class="cat-body">
+        <div class="exercise-grid">
+          <button class="exercise-btn" data-name="스쿼트" onclick="selectPreset('스쿼트','reps','🦵')">🦵 스쿼트</button>
+          <button class="exercise-btn" data-name="런지" onclick="selectPreset('런지','reps','🦵')">🦵 런지</button>
+          <button class="exercise-btn" data-name="점프 스쿼트" onclick="selectPreset('점프 스쿼트','reps','🦵')">🦵 점프 스쿼트</button>
+          <button class="exercise-btn" data-name="글루트 브릿지" onclick="selectPreset('글루트 브릿지','reps','🦵')">🦵 글루트 브릿지</button>
+          <button class="exercise-btn" data-name="카프레이즈" onclick="selectPreset('카프레이즈','reps','🦵')">🦵 카프레이즈</button>
+        </div>
       </div>
     </div>
     <div class="exercise-category">
-      <div class="category-label">⚡ 전신</div>
-      <div class="exercise-grid">
-        <button class="exercise-btn" data-name="버피" onclick="selectPreset('버피','reps','⚡')">⚡ 버피</button>
-        <button class="exercise-btn" data-name="점핑잭" onclick="selectPreset('점핑잭','reps','⚡')">⚡ 점핑잭</button>
-        <button class="exercise-btn" data-name="하이니" onclick="selectPreset('하이니','reps','⚡')">⚡ 하이니</button>
+      <button class="cat-toggle" onclick="toggleCat(this)">
+        <span>⚡ 전신</span><span class="cat-arrow">›</span>
+      </button>
+      <div class="cat-body">
+        <div class="exercise-grid">
+          <button class="exercise-btn" data-name="버피" onclick="selectPreset('버피','reps','⚡')">⚡ 버피</button>
+          <button class="exercise-btn" data-name="점핑잭" onclick="selectPreset('점핑잭','reps','⚡')">⚡ 점핑잭</button>
+          <button class="exercise-btn" data-name="하이니" onclick="selectPreset('하이니','reps','⚡')">⚡ 하이니</button>
+        </div>
+      </div>
+    </div>
+    <div class="exercise-category">
+      <button class="cat-toggle" onclick="toggleCat(this)">
+        <span>🏃 러닝</span><span class="cat-arrow">›</span>
+      </button>
+      <div class="cat-body">
+        <div class="exercise-grid">
+          <button class="exercise-btn" data-name="달리기" onclick="selectPreset('달리기','time','🏃')">🏃 달리기</button>
+          <button class="exercise-btn" data-name="인터벌 러닝" onclick="selectPreset('인터벌 러닝','time','🏃')">🏃 인터벌 러닝</button>
+          <button class="exercise-btn" data-name="걷기" onclick="selectPreset('걷기','time','🚶')">🚶 걷기</button>
+          <button class="exercise-btn" data-name="줄넘기" onclick="selectPreset('줄넘기','reps','🪢')">🪢 줄넘기</button>
+          <button class="exercise-btn" data-name="사이클" onclick="selectPreset('사이클','time','🚴')">🚴 사이클</button>
+        </div>
       </div>
     </div>
     <div class="exercise-category">

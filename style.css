@@ -495,7 +495,42 @@ html, body {
 }
 
 /* ── 운동 선택 모달 ── */
-.exercise-category { margin-bottom: 18px; }
+.exercise-category { margin-bottom: 6px; }
+
+.cat-toggle {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--surface2);
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s;
+  min-height: 50px;
+}
+
+.cat-toggle:active { background: var(--border); }
+
+.cat-toggle.open { background: var(--primary-muted); color: var(--primary-light); }
+
+.cat-arrow {
+  font-size: 18px;
+  color: var(--text-muted);
+  transition: transform 0.2s;
+  line-height: 1;
+}
+
+.cat-toggle.open .cat-arrow { transform: rotate(90deg); color: var(--primary-light); }
+
+.cat-body {
+  display: none;
+  padding: 10px 4px 6px;
+}
 
 .category-label {
   font-size: 12px;

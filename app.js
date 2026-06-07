@@ -245,6 +245,13 @@ function showPrevRecord(name) {
       </div>`).join('')}`;
 }
 
+function toggleCat(btn) {
+  const body = btn.nextElementSibling;
+  const isOpen = btn.classList.contains('open');
+  btn.classList.toggle('open', !isOpen);
+  body.style.display = isOpen ? 'none' : 'block';
+}
+
 function openAddModal() {
   selectedExercise = null;
   customType = 'reps';
