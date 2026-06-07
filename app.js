@@ -616,7 +616,47 @@ function showToast(msg) {
 }
 
 // ── 앱 시작 ──
-window.addEventListener('load', () => {
-  renderCalendar();
-  updateTimerDisplay();
-});
+// ── Firebase Auth ──
+let firebaseAuth = null;
+
+function initAuth() {
+  try {
+    firebase.initializeApp(firebaseConfig);
+    firebaseAuth = firebase.auth();
+
+    firebaseAuth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'flex';
+        const avatar = document.getElementById('user-avatar');
+        if (user.photoURL) {
+          avatar.src = user.photoURL;
+          avatar.style.display = 'block';
+        }
+        renderCalendar();
+        updateTimerDisplay();
+      } else {
+        document.getElementById('login-screen').style.display = 'flex';
+        document.getElementById('app').style.display = 'none';
+      }
+    });
+  } catch (e) {
+    console.error('Firebase init error:', e);
+    // Firebase 설정 오류 시 그냥 앱 표시
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'flex';
+    renderCalendar();
+    updateTimerDisplay();
+  }
+}
+
+function loginWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  firebaseAuth.signInWithPopup(provider).catch(e => showToast('로그인 실패: ' + e.message));
+}
+
+function confirmLogout() {
+  if (confirm('로그아웃 할까요?')) firebaseAuth.signOut();
+}
+
+window.addEventListener('load', initAuth);
