@@ -163,7 +163,6 @@ function saveModalWorkout() {
   const all = getAllWorkouts();
   all[modalDate] = { ...modalWorkout, savedAt: new Date().toISOString() };
   saveAllWorkouts(all);
-  saveToCloud(modalDate, all[modalDate]);
   closeWorkoutModal();
   renderCalendar();
   showToast('✅ 저장됐어요!');
@@ -448,7 +447,6 @@ function finishActiveWorkout() {
   const all = getAllWorkouts();
   all[aw.date] = { exercises: aw.exercises, savedAt: new Date().toISOString() };
   saveAllWorkouts(all);
-  saveToCloud(aw.date, all[aw.date]);
   resetStopwatch();
   document.getElementById('active-workout').classList.remove('visible');
   renderCalendar();
@@ -618,17 +616,15 @@ function showToast(msg) {
 }
 
 // ── 앱 시작 ──
-// ── Firebase Auth + Firestore ──
+// ── Firebase Auth ──
 let firebaseAuth = null;
-let db = null;
 
 function initAuth() {
   try {
     firebase.initializeApp(firebaseConfig);
     firebaseAuth = firebase.auth();
-    db = firebase.firestore();
 
-    firebaseAuth.onAuthStateChanged(async user => {
+    firebaseAuth.onAuthStateChanged(user => {
       if (user) {
         document.getElementById('login-screen').style.display = 'none';
         document.getElementById('app').style.display = 'flex';
@@ -637,8 +633,8 @@ function initAuth() {
           avatar.src = user.photoURL;
           avatar.style.display = 'block';
         }
+        renderCalendar();
         updateTimerDisplay();
-        await loadFromCloud();
       } else {
         document.getElementById('login-screen').style.display = 'flex';
         document.getElementById('app').style.display = 'none';
@@ -650,40 +646,6 @@ function initAuth() {
     document.getElementById('app').style.display = 'flex';
     renderCalendar();
     updateTimerDisplay();
-  }
-}
-
-async function loadFromCloud() {
-  if (!db || !firebaseAuth?.currentUser) { renderCalendar(); return; }
-  const uid = firebaseAuth.currentUser.uid;
-  try {
-    const snap = await db.collection('users').doc(uid).collection('workouts').get();
-    if (!snap.empty) {
-      const workouts = {};
-      snap.forEach(doc => {
-        const data = doc.data();
-        workouts[doc.id] = {
-          ...data,
-          savedAt: data.savedAt?.toDate?.()?.toISOString() || data.savedAt
-        };
-      });
-      saveAllWorkouts(workouts);
-    }
-  } catch (e) {
-    console.warn('Firestore load failed, using local data:', e.message);
-  }
-  renderCalendar();
-}
-
-async function saveToCloud(dateStr, data) {
-  if (!db || !firebaseAuth?.currentUser) return;
-  const uid = firebaseAuth.currentUser.uid;
-  const { savedAt, ...clean } = data;
-  try {
-    await db.collection('users').doc(uid).collection('workouts').doc(dateStr)
-      .set({ ...clean, savedAt: firebase.firestore.FieldValue.serverTimestamp() });
-  } catch (e) {
-    console.warn('Firestore save failed:', e.message);
   }
 }
 
