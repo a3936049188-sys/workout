@@ -951,18 +951,30 @@ html, body {
 
 .stat-date-list {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   gap: 6px;
 }
 
 .stat-date-chip {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text-muted);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   background: var(--surface2);
   border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: 50px;
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+}
+
+.chip-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.chip-meta {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary-light);
 }
 
 .hidden { display: none !important; }

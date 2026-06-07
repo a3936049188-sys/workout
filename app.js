@@ -476,28 +476,41 @@ function renderStatsView() {
     return;
   }
 
-  // 종목별로 날짜 모으기
+  // 30일 컷오프
+  const cutoff = new Date();
+  cutoff.setDate(cutoff.getDate() - 30);
+  const cutoffStr = `${cutoff.getFullYear()}-${String(cutoff.getMonth()+1).padStart(2,'0')}-${String(cutoff.getDate()).padStart(2,'0')}`;
+
+  // 종목별로 날짜+기록 모으기 (30일 이내만)
   const exerciseMap = {};
   all.forEach(({ date, exercises }) => {
+    if (date < cutoffStr) return;
     (exercises || []).forEach(ex => {
       if (!exerciseMap[ex.name]) {
-        exerciseMap[ex.name] = { icon: ex.icon || '🏋️', dates: [] };
+        exerciseMap[ex.name] = { icon: ex.icon || '🏋️', records: [] };
       }
-      exerciseMap[ex.name].dates.push(date);
+      const sets = ex.sets || [];
+      const totalReps = sets.reduce((s, set) => s + (parseInt(set.value) || 0), 0);
+      const totalTime = sets.reduce((s, set) => s + (set.time || 0), 0);
+      exerciseMap[ex.name].records.push({ date, totalReps, totalTime });
     });
   });
 
   const html = Object.entries(exerciseMap)
-    .sort((a, b) => b[1].dates.length - a[1].dates.length)
-    .map(([name, { icon, dates }]) => `
+    .sort((a, b) => b[1].records.length - a[1].records.length)
+    .map(([name, { icon, records }]) => `
       <div class="stat-exercise-item">
         <div class="stat-exercise-header">
           <span class="stat-exercise-icon">${icon}</span>
           <span class="stat-exercise-name">${name}</span>
-          <span class="stat-exercise-count">${dates.length}회</span>
+          <span class="stat-exercise-count">${records.length}일</span>
         </div>
         <div class="stat-date-list">
-          ${dates.map(d => `<span class="stat-date-chip">${formatDateKo(d)}</span>`).join('')}
+          ${records.map(r => `
+            <div class="stat-date-chip">
+              <span class="chip-date">${formatDateKo(r.date)}</span>
+              <span class="chip-meta">${r.totalReps > 0 ? `${r.totalReps}회` : ''}${r.totalReps > 0 && r.totalTime > 0 ? ' · ' : ''}${r.totalTime > 0 ? fmtTime(r.totalTime) : ''}</span>
+            </div>`).join('')}
         </div>
       </div>`).join('');
 
