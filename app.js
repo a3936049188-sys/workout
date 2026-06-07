@@ -94,10 +94,6 @@ function selectDate(dateStr) {
 let modalDate = null;
 let modalWorkout = null;
 
-function openTodayWorkout() {
-  selectDate(todayKey());
-}
-
 function openWorkoutModal(dateStr) {
   modalDate = dateStr;
   const all = getAllWorkouts();
@@ -137,20 +133,6 @@ function renderExerciseCard(ex, idx) {
         <button class="btn-sm btn-danger-sm" onclick="deleteExercise(${idx})">삭제</button>
       </div>
     </div>`;
-}
-
-function addSet(exerciseIdx) {
-  modalWorkout.exercises[exerciseIdx].sets.push({ value: '', note: '' });
-  renderModalExercises();
-}
-
-function deleteSet(exerciseIdx, setIdx) {
-  modalWorkout.exercises[exerciseIdx].sets.splice(setIdx, 1);
-  renderModalExercises();
-}
-
-function updateSet(exerciseIdx, setIdx, field, value) {
-  modalWorkout.exercises[exerciseIdx].sets[setIdx][field] = value;
 }
 
 function deleteExercise(idx) {
@@ -248,12 +230,7 @@ function selectPreset(name, type, icon) {
   showPrevRecord(name);
 }
 
-function setCustomType(type) {
-  customType = type;
-  document.querySelectorAll('.type-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.type === type);
-  });
-}
+
 
 function confirmAddExercise() {
   const customName = document.getElementById('custom-name').value.trim();
