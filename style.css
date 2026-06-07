@@ -83,6 +83,10 @@ html, body {
   padding-bottom: 20px;
 }
 
+#view-stats {
+  height: calc(100dvh - var(--nav-height));
+}
+
 .view.active { display: block; }
 
 .view-title {
