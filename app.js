@@ -467,52 +467,41 @@ function renderStatsView() {
     .sort(([a],[b]) => b.localeCompare(a))
     .map(([date, data]) => ({ date, ...data }));
 
-  const totalDays = all.length;
-  let streak = 0;
-  if (all.length > 0) {
-    let prev = null;
-    for (const item of all) {
-      if (!prev) { streak = 1; prev = item.date; continue; }
-      const diff = Math.round((new Date(prev) - new Date(item.date)) / 86400000);
-      if (diff === 1) { streak++; prev = item.date; } else break;
-    }
+  if (all.length === 0) {
+    document.getElementById('stats-content').innerHTML = `
+      <div style="text-align:center;padding:60px 20px;color:var(--text-muted)">
+        <div style="font-size:48px;margin-bottom:12px">📋</div>
+        <p>아직 운동 기록이 없어요</p>
+      </div>`;
+    return;
   }
 
-  const totalSets = all.reduce((acc, w) =>
-    acc + (w.exercises || []).reduce((a, e) => a + (e.sets || []).length, 0), 0);
+  // 종목별로 날짜 모으기
+  const exerciseMap = {};
+  all.forEach(({ date, exercises }) => {
+    (exercises || []).forEach(ex => {
+      if (!exerciseMap[ex.name]) {
+        exerciseMap[ex.name] = { icon: ex.icon || '🏋️', dates: [] };
+      }
+      exerciseMap[ex.name].dates.push(date);
+    });
+  });
 
-  const counter = {};
-  all.forEach(w => (w.exercises || []).forEach(e => {
-    counter[e.name] = (counter[e.name] || 0) + 1;
-  }));
-  const top = Object.entries(counter).sort((a,b) => b[1]-a[1]).slice(0, 5);
+  const html = Object.entries(exerciseMap)
+    .sort((a, b) => b[1].dates.length - a[1].dates.length)
+    .map(([name, { icon, dates }]) => `
+      <div class="stat-exercise-item">
+        <div class="stat-exercise-header">
+          <span class="stat-exercise-icon">${icon}</span>
+          <span class="stat-exercise-name">${name}</span>
+          <span class="stat-exercise-count">${dates.length}회</span>
+        </div>
+        <div class="stat-date-list">
+          ${dates.map(d => `<span class="stat-date-chip">${formatDateKo(d)}</span>`).join('')}
+        </div>
+      </div>`).join('');
 
-  const streakHtml = streak >= 2 ? `
-    <div class="streak-banner">
-      <div class="streak-fire">🔥</div>
-      <div class="streak-info">
-        <h3>${streak}일 연속 운동!</h3>
-        <p>대단해요, 계속 이어가세요!</p>
-      </div>
-    </div>` : '';
-
-  document.getElementById('stats-content').innerHTML = `
-    ${streakHtml}
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-value">${totalDays}</div><div class="stat-label">총 운동일</div></div>
-      <div class="stat-card"><div class="stat-value">${streak}</div><div class="stat-label">현재 연속</div></div>
-      <div class="stat-card"><div class="stat-value">${totalSets}</div><div class="stat-label">총 세트</div></div>
-      <div class="stat-card"><div class="stat-value">${totalDays > 0 ? Math.round(totalSets/totalDays) : 0}</div><div class="stat-label">평균 세트/회</div></div>
-    </div>
-    ${top.length > 0 ? `
-      <div class="section-title" style="margin-top:8px">자주 한 운동</div>
-      <div class="top-exercise-list">
-        ${top.map(([name, count]) => `
-          <div class="top-exercise-item">
-            <span>${name}</span>
-            <span>${count}회</span>
-          </div>`).join('')}
-      </div>` : ''}`;
+  document.getElementById('stats-content').innerHTML = `<div class="stat-exercise-list">${html}</div>`;
 }
 
 // ── 탭 전환 ──
